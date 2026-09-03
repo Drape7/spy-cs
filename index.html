@@ -98,6 +98,8 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg-0);color:var(-
 .pill-niche:hover{background:var(--bg-4)}
 .pill-niche.active{color:#fff}
 .pill-live{background:var(--green-bg);color:var(--green);border-color:var(--green)}
+.kw-chip{display:inline-block;padding:4px 12px;background:var(--bg-3);border:1px solid var(--border);border-radius:16px;color:var(--text-2);font-size:11px;cursor:pointer;font-family:inherit;transition:all .15s;text-decoration:none}
+.kw-chip:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-bg)}
 
 .content{padding:24px}
 .section{display:none}
@@ -315,7 +317,11 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg-0);color:var(-
         </div>
         <div class="card">
           <h3>Niche Keywords</h3>
-          <p style="font-size:12px;color:var(--text-3);margin-bottom:12px">Keywords per niche for Meta Ad Library searches.</p>
+          <p style="font-size:12px;color:var(--text-3);margin-bottom:12px">Click any keyword to search the Meta Ad Library. Or type your own below.</p>
+          <div style="display:flex;gap:8px;margin-bottom:16px">
+            <input id="kw-search-input" type="text" placeholder="Type or click a keyword..." style="flex:1;padding:8px 12px;background:var(--bg-3);border:1px solid var(--border);border-radius:8px;color:var(--text-1);font-size:13px;font-family:inherit">
+            <button onclick="buscarKwAdLib()" style="padding:8px 18px;background:var(--accent);border:none;border-radius:8px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap">Search Ad Library</button>
+          </div>
           <div id="config-keywords"></div>
         </div>
       </div>
@@ -326,10 +332,11 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg-0);color:var(-
 <script>
 // ===== NICHE CONFIG =====
 const NICHE_CONFIG = {
-  skincare:    { label: 'Skin Care',          cor: '#ec4899', keywords: ['serum','retinol','vitamin c','collagen','anti-aging','moisturizer','sunscreen','dark spots','wrinkles','acne','hyaluronic acid','niacinamide'] },
-  apparel:     { label: 'Apparel',            cor: '#3b82f6', keywords: ['clothing','dress','fashion','activewear','sustainable fashion','basics','loungewear','denim','athleisure','everyday wear'] },
-  health:      { label: 'Health & Wellness',  cor: '#22c55e', keywords: ['supplement','gut health','weight loss','sleep','immunity','energy','metabolism','probiotics','collagen','protein','adaptogens'] },
-  accessories: { label: 'Accessories/Jewelry',cor: '#f59e0b', keywords: ['jewelry','earrings','necklace','ring','bracelet','gold plated','fine jewelry','watch','accessories','pendant'] }
+  health:      { label: 'Health & Wellness',  cor: '#22c55e', keywords: ['probiotics','gut health supplement','GLP-1 supplement','GLP-1 natural','metabolism booster','fat burner','appetite suppressant','insulin resistance','resistant starch','prebiotic fiber','digestive enzymes','magnesium supplement','berberine supplement','organ supplements','synbiotic','weight loss supplement','probiotic weight loss','gut bacteria','metabolic health','blood sugar supplement','cortisol belly','natural GLP-1','anti-Ozempic','cravings control','bloating supplement','microbiome','functional gum','nootropic gum','adaptogens','sleep supplement','immunity','energy supplement','protein powder'] },
+  skincare:    { label: 'Skin Care',          cor: '#ec4899', keywords: ['colostrum supplement','colostrum skin','beauty supplement','beauty from within','hair growth supplement','hair vitamins','anti-aging supplement','collagen supplement','collagen powder','retinol serum','vitamin C serum','probiotic skin','gut-skin axis','skin glow supplement','hair thinning women','hair loss women','perimenopause supplement','menopause skin','PCOS supplement','PCOS natural','iron deficiency women','colostrum vs collagen','supplement consolidation','hyaluronic acid','niacinamide','moisturizer','sunscreen','dark spots','wrinkles','acne serum'] },
+  cookware:    { label: 'Cookware',           cor: '#f97316', keywords: ['titanium cookware','titanium pan','non-stick pan','PFAS free cookware','PFOA free pan','ceramic cookware','ceramic non-stick','cookware set','cast iron alternative','non-toxic cookware','chemical free pan','toxic cookware','safe cooking','chef endorsed cookware','25 year warranty','forever pan','buy once cookware','replace non-stick','lightweight cookware','dishwasher safe pan','cookware comparison'] },
+  apparel:     { label: 'Apparel',            cor: '#3b82f6', keywords: ['clothing','dress','fashion','activewear','sustainable fashion','basics','loungewear','denim','athleisure','everyday wear','perfect fit','cashmere','linen','factory direct'] },
+  accessories: { label: 'Accessories/Jewelry',cor: '#f59e0b', keywords: ['jewelry','earrings','necklace','ring','bracelet','gold plated','fine jewelry','watch','accessories','pendant','layering jewelry','sustainable jewelry','gold vermeil'] }
 };
 
 // ===== BRANDS =====
@@ -346,7 +353,11 @@ const BRANDS = [
   { id:'quince', name:'Quince', nicho:'apparel', url:'onequince.com', pageId:'', posicionamento:'Luxury materials, factory-direct prices. Cashmere, linen, silk. Transparent pricing.', totalAds:110, videoPercent:25, controle:'$50 cashmere that looks like $300', dataUltimoScan:'2026-09-02', status:'active' },
   { id:'mejuri', name:'Mejuri', nicho:'accessories', url:'mejuri.com', pageId:'', posicionamento:'Fine jewelry for everyday. "Luxury for your damn self". 14k gold, vermeil.', totalAds:130, videoPercent:35, controle:'Fine jewelry you never take off', dataUltimoScan:'2026-09-02', status:'active' },
   { id:'analuisa', name:'Ana Luisa', nicho:'accessories', url:'analuisa.com', pageId:'', posicionamento:'Sustainable jewelry. Carbon-neutral. "Guilt-free luxury". Mid-price.', totalAds:90, videoPercent:40, controle:'Jewelry that doesn\'t cost the earth', dataUltimoScan:'2026-09-02', status:'active' },
-  { id:'gorjana', name:'Gorjana', nicho:'accessories', url:'gorjana.com', pageId:'', posicionamento:'California-cool layering jewelry. Gold-dipped. Stack/layer positioning.', totalAds:75, videoPercent:30, controle:'The gold layering necklace everyone asks about', dataUltimoScan:'2026-09-02', status:'active' }
+  { id:'gorjana', name:'Gorjana', nicho:'accessories', url:'gorjana.com', pageId:'', posicionamento:'California-cool layering jewelry. Gold-dipped. Stack/layer positioning.', totalAds:75, videoPercent:30, controle:'The gold layering necklace everyone asks about', dataUltimoScan:'2026-09-02', status:'active' },
+  { id:'longwell', name:'Longwell & Co.', nicho:'cookware', url:'longwell.co', pageId:'1048635751671568', posicionamento:'Fear-based PFAS. Titanium pure. "25-year warranty". Price anchor vs competitors.', totalAds:129, videoPercent:40, controle:'After my third nonstick pan peeled in two years...', dataUltimoScan:'2026-09-02', status:'active' },
+  { id:'hexclad', name:'HexClad', nicho:'cookware', url:'hexclad.com', pageId:'', posicionamento:'Hybrid stainless-steel + non-stick. Gordon Ramsay endorsement. "Restaurant to home".', totalAds:850, videoPercent:65, controle:'Gordon Ramsay doesn\'t use non-stick. He uses this.', dataUltimoScan:'2026-09-02', status:'active' },
+  { id:'ourplace', name:'Our Place', nicho:'cookware', url:'fromourplace.com', pageId:'', posicionamento:'Always Pan hero. Replaces 8 pieces. Instagram-aesthetic. Multicultural cooking.', totalAds:420, videoPercent:55, controle:'This one pan replaced 8 in my kitchen', dataUltimoScan:'2026-09-02', status:'active' },
+  { id:'caraway', name:'Caraway', nicho:'cookware', url:'carawayhome.com', pageId:'', posicionamento:'Ceramic non-stick. Non-toxic positioning. Beautiful storage. Wedding registry play.', totalAds:380, videoPercent:50, controle:'I threw away all my old pans after learning about PFAS', dataUltimoScan:'2026-09-02', status:'active' }
 ];
 
 // ===== ADS CATALOG =====
@@ -415,6 +426,25 @@ const ADS_CATALOG = {
   gorjana:[
     {adId:'gor-001',formato:'video',duracao:'15s',angulo:'lifestyle',produto:'Parker Necklace',beneficios:['layering','California','gold'],awareness:'solution-aware',hookText:'The gold layering necklace everyone asks about',variacoes:10,dataInicio:'2026-03-01',isControle:true,link:''},
     {adId:'gor-002',formato:'static',duracao:'',angulo:'styling',produto:'Layering Set',beneficios:['stack','personalize'],awareness:'product-aware',hookText:'3 necklaces, infinite combinations',variacoes:4,dataInicio:'2026-06-01',isControle:false,link:''}
+  ],
+  longwell:[
+    {adId:'lw-001',formato:'video',duracao:'45s',angulo:'fear-toxic',produto:'Titanium Frying Pan',beneficios:['PFAS free','titanium','25-year warranty'],awareness:'problem-aware',hookText:'After my third nonstick pan peeled in two years...',variacoes:32,dataInicio:'2026-04-15',isControle:true,link:''},
+    {adId:'lw-002',formato:'static',duracao:'',angulo:'comparison',produto:'Titanium Set',beneficios:['price anchor','vs HexClad','lifetime'],awareness:'solution-aware',hookText:'Why I switched from HexClad to this',variacoes:14,dataInicio:'2026-06-01',isControle:false,link:''},
+    {adId:'lw-003',formato:'video',duracao:'30s',angulo:'testimonial-chef',produto:'Titanium Frying Pan',beneficios:['professional grade','lightweight'],awareness:'most-aware',hookText:'I\'m a chef and this is the only pan I use at home',variacoes:8,dataInicio:'2026-07-10',isControle:false,link:''}
+  ],
+  hexclad:[
+    {adId:'hx-001',formato:'video',duracao:'60s',angulo:'celebrity-endorsement',produto:'Hybrid Pan',beneficios:['Gordon Ramsay','restaurant grade','hybrid tech'],awareness:'solution-aware',hookText:'Gordon Ramsay doesn\'t use non-stick. He uses this.',variacoes:45,dataInicio:'2026-02-01',isControle:true,link:''},
+    {adId:'hx-002',formato:'video',duracao:'30s',angulo:'science-demo',produto:'Hybrid Pan',beneficios:['laser-etched','tri-ply','metal utensil safe'],awareness:'problem-aware',hookText:'Watch what happens when we scratch this pan with a fork',variacoes:22,dataInicio:'2026-05-15',isControle:false,link:''},
+    {adId:'hx-003',formato:'carousel',duracao:'',angulo:'gift-guide',produto:'6-Piece Set',beneficios:['premium gift','bundle savings'],awareness:'most-aware',hookText:'The cookware set they actually want',variacoes:10,dataInicio:'2026-06-20',isControle:false,link:''}
+  ],
+  ourplace:[
+    {adId:'op-001',formato:'video',duracao:'30s',angulo:'minimalism',produto:'Always Pan',beneficios:['replaces 8 pieces','space saving','beautiful'],awareness:'solution-aware',hookText:'This one pan replaced 8 in my kitchen',variacoes:38,dataInicio:'2026-03-01',isControle:true,link:''},
+    {adId:'op-002',formato:'static',duracao:'',angulo:'aesthetic',produto:'Always Pan 2.0',beneficios:['new colors','steam insert','nesting'],awareness:'product-aware',hookText:'Cookware that looks as good as your food',variacoes:15,dataInicio:'2026-07-01',isControle:false,link:''}
+  ],
+  caraway:[
+    {adId:'cw-001',formato:'video',duracao:'45s',angulo:'fear-toxic',produto:'Cookware Set',beneficios:['ceramic non-stick','PFOA free','non-toxic'],awareness:'problem-aware',hookText:'I threw away all my old pans after learning about PFAS',variacoes:28,dataInicio:'2026-01-15',isControle:true,link:''},
+    {adId:'cw-002',formato:'video',duracao:'30s',angulo:'organization',produto:'Storage Set',beneficios:['magnetic rack','space saving','aesthetic'],awareness:'solution-aware',hookText:'Finally, cookware that stores itself',variacoes:12,dataInicio:'2026-05-01',isControle:false,link:''},
+    {adId:'cw-003',formato:'static',duracao:'',angulo:'wedding-registry',produto:'Full Set',beneficios:['registry favorite','luxury gift','complete kitchen'],awareness:'most-aware',hookText:'The #1 cookware on wedding registries',variacoes:9,dataInicio:'2026-06-15',isControle:false,link:''}
   ]
 };
 
@@ -896,8 +926,19 @@ function renderTeardowns() {
 function renderConfig() {
   const c = document.getElementById('config-keywords');
   c.innerHTML = Object.entries(NICHE_CONFIG).map(([key, cfg]) =>
-    `<div style="margin-bottom:16px"><div style="font-size:12px;font-weight:600;color:${cfg.cor};margin-bottom:4px">${cfg.label}</div><div style="font-size:11px;color:var(--text-2);line-height:1.6">${cfg.keywords.join(', ')}</div></div>`
+    `<div style="margin-bottom:16px"><div style="font-size:12px;font-weight:600;color:${cfg.cor};margin-bottom:6px">${cfg.label} <span style="font-weight:400;color:var(--text-3)">(${cfg.keywords.length})</span></div><div style="display:flex;flex-wrap:wrap;gap:6px">${cfg.keywords.map(kw =>
+      `<button class="kw-chip" onclick="clickKw('${kw.replace(/'/g,"\\'")}');" style="border-color:${cfg.cor}22">${escHtml(kw)}</button>`
+    ).join('')}</div></div>`
   ).join('');
+}
+function clickKw(kw) {
+  document.getElementById('kw-search-input').value = kw;
+  buscarKwAdLib();
+}
+function buscarKwAdLib() {
+  const kw = document.getElementById('kw-search-input').value.trim();
+  if (!kw) { showToast('Type a keyword to search', 'info'); return; }
+  window.open('https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=US&search_type=keyword_unordered&q=' + encodeURIComponent(kw), '_blank');
 }
 
 function saveSbConfig() {
