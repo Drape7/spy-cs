@@ -117,6 +117,23 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg-0);color:var(-
 .kw-lang-btn{padding:5px 14px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--bg-3);color:var(--text-2);font-family:inherit;transition:all .15s}
 .kw-lang-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
 
+.score-bar{height:8px;background:var(--bg-3);border-radius:4px;overflow:hidden;min-width:80px}
+.score-fill{height:100%;border-radius:4px;transition:width .3s}
+.rank-num{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;background:var(--bg-3);color:var(--text-2)}
+.rank-1{background:var(--yellow-bg);color:var(--yellow)}.rank-2{background:var(--accent-bg);color:var(--accent)}.rank-3{background:var(--green-bg);color:var(--green)}.rank-4{background:var(--bg-3);color:var(--text-3)}
+.status-chip{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.3px}
+.status-escalado{background:var(--green-bg);color:var(--green)}.status-lancamento{background:var(--yellow-bg);color:var(--yellow)}.status-teste{background:var(--bg-3);color:var(--text-3)}
+.niche-chip{display:inline-block;padding:5px 14px;background:var(--bg-3);border:1px solid var(--border);border-radius:8px;color:var(--text-2);font-size:12px;cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap}
+.niche-chip:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-bg)}
+.niche-chips{display:flex;gap:6px;flex-wrap:wrap}
+.kw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:20px}
+.kw-card{background:var(--bg-2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;cursor:pointer;transition:all .15s}
+.kw-card:hover{border-color:var(--accent);background:var(--accent-bg)}
+.kw-card-text{font-size:13px;font-weight:600;color:var(--text-1);margin-bottom:4px}
+.kw-card-meta{font-size:10px;color:var(--text-3);display:flex;justify-content:space-between;align-items:center}
+.kw-status{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;padding:1px 6px;border-radius:3px}
+.kw-status-done{background:var(--green-bg);color:var(--green)}.kw-status-pending{background:var(--yellow-bg);color:var(--yellow)}
+
 .chart-wrap{position:relative;padding:10px 0}
 
 .ad-actions{position:relative;display:inline-block}
@@ -243,6 +260,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg-0);color:var(-
       <div class="nav-section">Tools</div>
       <div class="nav-item" data-section="vsl-extract"><span class="icon">&#127909;</span>Extract VSL</div>
       <div class="nav-item" data-section="config"><span class="icon">&#9881;</span>Config</div>
+      <div class="nav-item" data-section="keywords"><span class="icon">&#128273;</span>Keywords</div>
       <div class="nav-item" data-section="discovery"><span class="icon">&#128301;</span>Discovery<span class="nav-badge" id="discovery-badge">0</span></div>
     </nav>
     <div class="sidebar-footer">
@@ -363,32 +381,78 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg-0);color:var(-
         </div>
       </div>
 
-      <div class="section" id="sec-discovery">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-          <p style="font-size:12px;color:var(--text-3);margin:0;line-height:1.5">Discover and track new brands. Entries persist in your browser via localStorage.</p>
-          <button class="pill pill-live" onclick="toggleDiscForm()" id="disc-toggle-btn" style="padding:8px 16px;font-size:12px">+ Add Brand</button>
-        </div>
-        <div class="disc-form" id="disc-form">
-          <label>Brand Name *</label>
-          <input type="text" id="disc-name" placeholder="e.g. Ritual">
-          <label>Website</label>
-          <input type="text" id="disc-url" placeholder="e.g. ritual.com">
-          <label>Niche</label>
-          <select id="disc-niche" style="background:var(--bg-2);border:1px solid var(--border);color:var(--text-1);padding:8px 12px;border-radius:6px;font-size:12px;font-family:inherit;width:100%">
-            <option value="health">Health & Wellness</option>
-            <option value="skincare">Skin Care</option>
-            <option value="cookware">Cookware</option>
-            <option value="apparel">Apparel</option>
-            <option value="accessories">Accessories/Jewelry</option>
-          </select>
-          <label>Notes</label>
-          <textarea id="disc-notes" placeholder="Positioning, ad count, why tracking..."></textarea>
-          <div style="margin-top:16px;display:flex;gap:8px">
-            <button class="pill pill-live" onclick="salvarDiscovery()" style="padding:8px 20px;font-size:12px">Save</button>
-            <button class="pill pill-niche" onclick="toggleDiscForm()" style="padding:8px 20px;font-size:12px">Cancel</button>
+      <div class="section" id="sec-keywords">
+        <div style="margin-bottom:20px">
+          <h3 style="font-size:15px;font-weight:700;margin-bottom:4px">Keywords</h3>
+          <p style="font-size:12px;color:var(--text-3);margin-bottom:12px">Per-niche keywords by language. Click to search directly in Ad Library (US).</p>
+          <div style="display:flex;gap:6px">
+            <input id="kw-search-input" type="text" placeholder="Type or click a keyword..." style="flex:1;padding:8px 12px;background:var(--bg-3);border:1px solid var(--border);border-radius:8px;color:var(--text-1);font-size:13px;font-family:inherit">
+            <button onclick="buscarKwAdLibTab()" style="padding:8px 18px;background:var(--accent);border:none;border-radius:8px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap">Search Ad Library</button>
           </div>
         </div>
-        <div class="table-card" id="disc-table"></div>
+        <div id="kw-niche-sections"></div>
+      </div>
+
+      <div class="section" id="sec-discovery">
+        <div style="margin-bottom:20px">
+          <h3 style="font-size:15px;font-weight:700;margin-bottom:4px">Auto-Discovery</h3>
+          <p style="font-size:12px;color:var(--text-3);line-height:1.5;margin-bottom:16px">Search by keyword in Ad Library, identify scaled advertisers, and add to monitoring. Scale Score = active ad count (more ads = more scaled).</p>
+
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:end;margin-bottom:16px">
+            <div style="flex:1;min-width:260px">
+              <label style="font-size:11px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Search keyword</label>
+              <input id="ad-kw-input" type="text" placeholder="e.g. gut health, titanium pan, cashmere..." style="width:100%;padding:8px 12px;background:var(--bg-3);border:1px solid var(--border);border-radius:6px;color:var(--text-1);font-size:13px;font-family:inherit;outline:none" />
+            </div>
+            <div style="display:flex;gap:6px">
+              <button onclick="buscarAdLibraryDisc()" style="padding:8px 16px;background:var(--accent);color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;height:37px">Search Ad Library</button>
+              <button onclick="toggleDiscForm()" id="disc-toggle-btn" style="padding:8px 16px;background:var(--green);color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;height:37px">+ Add</button>
+            </div>
+          </div>
+
+          <div id="disc-form" style="display:none;background:var(--bg-2);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:16px">
+            <div style="font-size:12px;font-weight:600;color:var(--text-1);margin-bottom:12px">Register discovered advertiser</div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:12px">
+              <div>
+                <label style="font-size:10px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:3px">Name / Page</label>
+                <input id="disc-name" type="text" placeholder="e.g. Seed" style="width:100%;padding:6px 10px;background:var(--bg-3);border:1px solid var(--border);border-radius:4px;color:var(--text-1);font-size:12px;font-family:inherit;outline:none" />
+              </div>
+              <div>
+                <label style="font-size:10px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:3px">Page ID (Facebook)</label>
+                <input id="disc-pageid" type="text" placeholder="e.g. 1048635751671568" style="width:100%;padding:6px 10px;background:var(--bg-3);border:1px solid var(--border);border-radius:4px;color:var(--text-1);font-size:12px;font-family:inherit;outline:none" />
+              </div>
+              <div>
+                <label style="font-size:10px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:3px">Active ads (Scale Score)</label>
+                <input id="disc-adcount" type="number" placeholder="e.g. 150" min="0" style="width:100%;padding:6px 10px;background:var(--bg-3);border:1px solid var(--border);border-radius:4px;color:var(--text-1);font-size:12px;font-family:inherit;outline:none" />
+              </div>
+              <div>
+                <label style="font-size:10px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:3px">Domain</label>
+                <input id="disc-domain" type="text" placeholder="e.g. seed.com" style="width:100%;padding:6px 10px;background:var(--bg-3);border:1px solid var(--border);border-radius:4px;color:var(--text-1);font-size:12px;font-family:inherit;outline:none" />
+              </div>
+              <div>
+                <label style="font-size:10px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:3px">Keyword used</label>
+                <input id="disc-keyword" type="text" placeholder="e.g. gut health" style="width:100%;padding:6px 10px;background:var(--bg-3);border:1px solid var(--border);border-radius:4px;color:var(--text-1);font-size:12px;font-family:inherit;outline:none" />
+              </div>
+              <div>
+                <label style="font-size:10px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:3px">Niche / Mechanism</label>
+                <input id="disc-mech" type="text" placeholder="e.g. Quiz funnel weight loss" style="width:100%;padding:6px 10px;background:var(--bg-3);border:1px solid var(--border);border-radius:4px;color:var(--text-1);font-size:12px;font-family:inherit;outline:none" />
+              </div>
+            </div>
+            <div style="display:flex;gap:8px">
+              <button onclick="salvarDiscovery()" style="padding:6px 16px;background:var(--accent);color:#fff;border:none;border-radius:4px;font-size:12px;font-weight:600;cursor:pointer">Save</button>
+              <button onclick="toggleDiscForm()" style="padding:6px 16px;background:var(--bg-3);border:1px solid var(--border);border-radius:4px;color:var(--text-3);font-size:12px;cursor:pointer">Cancel</button>
+            </div>
+          </div>
+
+          <div id="disc-quick-kw" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px"></div>
+        </div>
+
+        <div id="disc-stats" style="display:none;margin-bottom:16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px"></div>
+        <div id="disc-table" style="margin-bottom:20px"></div>
+        <div id="disc-empty" style="text-align:center;padding:40px 20px;color:var(--text-3);font-size:13px">
+          <div style="font-size:28px;margin-bottom:8px">&#128269;</div>
+          No advertisers discovered yet.<br>
+          <span style="font-size:11px;color:var(--text-4);line-height:1.6">Search a keyword in Ad Library, identify scaled advertisers, and add them here with "+ Add".</span>
+        </div>
       </div>
     </div>
   </div>
@@ -555,23 +619,94 @@ const ALL_ANGLES = ['testimonial-transformation','science-authority','ingredient
 // ===== AUTO-DISCOVERY =====
 const DISC_KEY = 'spy_cs_discovery';
 const SEED_DISCOVERY = [
-  { id:'disc-ritual', name:'Ritual', url:'ritual.com', nicho:'health', notes:'Traceable vitamins. "Made Traceable". Subscription-first. Essential for Women hero.', added:'seed' },
-  { id:'disc-nutrafol', name:'Nutrafol', url:'nutrafol.com', nicho:'skincare', notes:'Hair growth supplement. Dermatologist recommended. Before/after focused.', added:'seed' },
-  { id:'disc-skims', name:'SKIMS', url:'skims.com', nicho:'apparel', notes:'Kim K shapewear/basics. Inclusive sizing. Massive scale.', added:'seed' },
-  { id:'disc-missoma', name:'Missoma', url:'missoma.com', nicho:'accessories', notes:'UK demi-fine jewelry. Layering focus. Celebrity collabs.', added:'seed' },
-  { id:'disc-madeincookware', name:'Made In Cookware', url:'madeincookware.com', nicho:'cookware', notes:'Pro-grade cookware. Chef partnerships. American-made positioning.', added:'seed' }
+  { id:'disc-ritual', name:'Ritual', pageId:'', adCount:95, domain:'ritual.com', keywords:['vitamins','traceable vitamins','prenatal vitamins'], mech:'Traceable vitamins. Subscription-first. Essential for Women hero.', status:'reference', monitorando:true, seed:true, createdAt:'2026-09-02T00:00:00Z', updatedAt:'2026-09-02T00:00:00Z' },
+  { id:'disc-nutrafol', name:'Nutrafol', pageId:'', adCount:140, domain:'nutrafol.com', keywords:['hair growth','hair loss women','hair vitamins'], mech:'Hair growth supplement. Dermatologist recommended. Before/after focused.', status:'reference', monitorando:true, seed:true, createdAt:'2026-09-02T00:00:00Z', updatedAt:'2026-09-02T00:00:00Z' },
+  { id:'disc-skims', name:'SKIMS', pageId:'', adCount:310, domain:'skims.com', keywords:['shapewear','basics','bodysuit'], mech:'Kim K shapewear/basics. Inclusive sizing. Massive scale.', status:'reference', monitorando:true, seed:true, createdAt:'2026-09-02T00:00:00Z', updatedAt:'2026-09-02T00:00:00Z' },
+  { id:'disc-missoma', name:'Missoma', pageId:'', adCount:65, domain:'missoma.com', keywords:['layering jewelry','gold vermeil','demi-fine jewelry'], mech:'UK demi-fine jewelry. Layering focus. Celebrity collabs.', status:'reference', monitorando:true, seed:true, createdAt:'2026-09-02T00:00:00Z', updatedAt:'2026-09-02T00:00:00Z' },
+  { id:'disc-madeincookware', name:'Made In Cookware', pageId:'', adCount:85, domain:'madeincookware.com', keywords:['cookware','chef cookware','American made'], mech:'Pro-grade cookware. Chef partnerships. American-made positioning.', status:'reference', monitorando:true, seed:true, createdAt:'2026-09-02T00:00:00Z', updatedAt:'2026-09-02T00:00:00Z' }
 ];
 let _discoveryData = [];
 
 function loadDiscoveryData() {
   try {
     const stored = JSON.parse(localStorage.getItem(DISC_KEY) || '[]');
-    const seedIds = new Set(stored.map(d => d.id));
-    _discoveryData = [...SEED_DISCOVERY.filter(s => !seedIds.has(s.id)), ...stored];
+    const seedNames = new Set(stored.map(d => d.name ? d.name.toLowerCase() : ''));
+    const userOnly = stored.filter(d => !d.seed && !SEED_DISCOVERY.some(s => s.id === d.id));
+    _discoveryData = [...SEED_DISCOVERY.map(s => {
+      const override = stored.find(u => u.seed && u.id === s.id);
+      return override ? {...s, ...override, seed:true, status:'reference'} : s;
+    }), ...userOnly];
   } catch(e) { _discoveryData = [...SEED_DISCOVERY]; }
+  updateDiscBadge();
 }
 function saveDiscoveryData() {
   try { localStorage.setItem(DISC_KEY, JSON.stringify(_discoveryData)); } catch(e) {}
+  updateDiscBadge();
+}
+function updateDiscBadge() {
+  const b = document.getElementById('discovery-badge');
+  if (b) b.textContent = _discoveryData.length;
+}
+
+// ===== KEYWORDS TAB =====
+const KW_STATUS_KEY = 'spy_cs_kw_status';
+let _kwStatusData = {};
+function loadKwStatus() {
+  try { _kwStatusData = JSON.parse(localStorage.getItem(KW_STATUS_KEY) || '{}'); } catch(e) { _kwStatusData = {}; }
+}
+function saveKwStatus() {
+  try { localStorage.setItem(KW_STATUS_KEY, JSON.stringify(_kwStatusData)); } catch(e) {}
+}
+function buscarKwAdLibTab() {
+  const kw = document.getElementById('kw-search-input').value.trim();
+  if (!kw) { showToast('Type a keyword first', 'info'); return; }
+  window.open('https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=US&search_type=keyword_unordered&q=' + encodeURIComponent(kw), '_blank');
+  _kwStatusData[kw.toLowerCase()] = { status:'done', searchedAt:new Date().toISOString() };
+  saveKwStatus();
+}
+function clickKwChip(kw) {
+  document.getElementById('kw-search-input').value = kw;
+  buscarKwAdLibTab();
+}
+function renderKeywordsTab() {
+  loadKwStatus();
+  const container = document.getElementById('kw-niche-sections');
+  if (!container) return;
+  const niches = Object.keys(NICHE_KW_LANG);
+  let html = '';
+  niches.forEach(niche => {
+    const cfg = NICHE_CONFIG[niche];
+    const langs = NICHE_KW_LANG[niche];
+    html += `<div style="margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--border)">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+        <h4 style="font-size:13px;font-weight:700;margin:0">${escHtml(cfg.label)} Keywords</h4>
+        <div style="display:flex;gap:4px">
+          <button class="kw-lang-btn active" onclick="switchNicheKwLang('${niche}','en',this)">EN</button>
+          <button class="kw-lang-btn" onclick="switchNicheKwLang('${niche}','pt',this)">PT</button>
+          <button class="kw-lang-btn" onclick="switchNicheKwLang('${niche}','es',this)">ES</button>
+        </div>
+      </div>
+      <div class="niche-chips" id="kw-chips-${niche}"></div>
+    </div>`;
+  });
+  container.innerHTML = html;
+  niches.forEach(n => renderNicheKwChips(n, 'en'));
+}
+function renderNicheKwChips(niche, lang) {
+  const el = document.getElementById('kw-chips-' + niche);
+  if (!el) return;
+  const kws = NICHE_KW_LANG[niche][lang] || [];
+  el.innerHTML = kws.map(kw => {
+    const st = _kwStatusData[kw.toLowerCase()];
+    const searched = st && st.status === 'done';
+    return `<button class="niche-chip" style="${searched ? 'border-color:var(--green);color:var(--green)' : ''}" onclick="clickKwChip('${escHtml(kw)}')" title="${searched ? 'SEARCHED' : 'PENDING'}">${escHtml(kw)}${searched ? ' &#10003;' : ''}</button>`;
+  }).join('');
+}
+function switchNicheKwLang(niche, lang, btn) {
+  renderNicheKwChips(niche, lang);
+  const parent = btn.parentElement;
+  parent.querySelectorAll('.kw-lang-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
 }
 
 // ===== STATE =====
@@ -660,7 +795,7 @@ const TAB_TITLES = {
   overview:'Overview', brands:'Brands', catalog:'Ad Catalog', controls:'Controls',
   coverage:'Coverage Map', gaps:'Gaps', angles:'Angles', 'spy-reports':'Spy Reports',
   timeline:'Timeline', compare:'Compare', teardowns:'Teardowns',
-  'vsl-extract':'Extract VSL', config:'Config', discovery:'Discovery'
+  'vsl-extract':'Extract VSL', config:'Config', keywords:'Keywords', discovery:'Auto-Discovery'
 };
 
 document.querySelectorAll('.nav-item').forEach(item => {
@@ -730,7 +865,8 @@ function renderTab(tab) {
     case 'compare': renderCompareSetup(); break;
     case 'teardowns': renderTeardowns(); break;
     case 'config': renderConfig(); break;
-    case 'discovery': renderDiscovery(); break;
+    case 'keywords': renderKeywordsTab(); break;
+    case 'discovery': renderDiscovery(); renderDiscQuickKw(); break;
   }
   updateBadges();
 }
@@ -1297,57 +1433,183 @@ function toggleModalView() {
   }
 }
 
-// ===== DISCOVERY =====
+// ===== DISCOVERY (Auto-Discovery) =====
 function toggleDiscForm() {
   const f = document.getElementById('disc-form');
-  f.style.display = f.style.display === 'block' ? 'none' : 'block';
+  f.style.display = f.style.display === 'none' ? 'block' : 'none';
+}
+
+function buscarAdLibraryDisc() {
+  const kw = document.getElementById('ad-kw-input').value.trim();
+  if (!kw) { showToast('Type a keyword to search', 'info'); return; }
+  window.open('https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=US&search_type=keyword_unordered&q=' + encodeURIComponent(kw), '_blank');
+  const kwField = document.getElementById('disc-keyword');
+  if (kwField) kwField.value = kw;
 }
 
 function salvarDiscovery() {
   const name = document.getElementById('disc-name').value.trim();
-  if (!name) { showToast('Brand name is required', 'info'); return; }
-  const entry = {
-    id: 'disc-' + Date.now(),
-    name: name,
-    url: document.getElementById('disc-url').value.trim(),
-    nicho: document.getElementById('disc-niche').value,
-    notes: document.getElementById('disc-notes').value.trim(),
-    added: new Date().toISOString().slice(0, 10)
-  };
-  _discoveryData.push(entry);
+  const pageId = document.getElementById('disc-pageid').value.trim();
+  const adCount = parseInt(document.getElementById('disc-adcount').value) || 0;
+  const domain = document.getElementById('disc-domain').value.trim();
+  const keyword = document.getElementById('disc-keyword').value.trim();
+  const mech = document.getElementById('disc-mech').value.trim();
+  if (!name) { showToast('Advertiser name is required', 'info'); return; }
+  if (!adCount) { showToast('Active ad count is required (Scale Score)', 'info'); return; }
+  const existing = _discoveryData.find(d => d.name.toLowerCase() === name.toLowerCase());
+  if (existing) {
+    if (confirm('Advertiser "' + name + '" already exists with ' + existing.adCount + ' ads. Update to ' + adCount + '?')) {
+      existing.adCount = adCount;
+      existing.updatedAt = new Date().toISOString();
+      if (pageId) existing.pageId = pageId;
+      if (domain) existing.domain = domain;
+      if (keyword && !existing.keywords.includes(keyword)) existing.keywords.push(keyword);
+      if (mech) existing.mech = mech;
+    } else return;
+  } else {
+    _discoveryData.push({
+      id: 'disc-' + Date.now(), name, pageId, adCount, domain,
+      keywords: keyword ? [keyword] : [], mech,
+      status: 'discovered', monitorando: false,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    });
+  }
   saveDiscoveryData();
-  document.getElementById('disc-name').value = '';
-  document.getElementById('disc-url').value = '';
-  document.getElementById('disc-notes').value = '';
-  toggleDiscForm();
   renderDiscovery();
-  showToast('Brand added to Discovery');
+  document.getElementById('disc-name').value = '';
+  document.getElementById('disc-pageid').value = '';
+  document.getElementById('disc-adcount').value = '';
+  document.getElementById('disc-domain').value = '';
+  document.getElementById('disc-keyword').value = '';
+  document.getElementById('disc-mech').value = '';
+  toggleDiscForm();
+  showToast('Advertiser saved');
+}
+
+function toggleMonitorar(id) {
+  const d = _discoveryData.find(x => String(x.id) === String(id));
+  if (!d) return;
+  d.monitorando = !d.monitorando;
+  d.status = d.seed ? 'reference' : d.monitorando ? 'monitoring' : 'discovered';
+  d.updatedAt = new Date().toISOString();
+  saveDiscoveryData();
+  renderDiscovery();
 }
 
 function removeDiscovery(id) {
-  _discoveryData = _discoveryData.filter(d => d.id !== id);
+  const d = _discoveryData.find(x => String(x.id) === String(id));
+  if (d && d.seed) { showToast('Reference entries cannot be removed', 'info'); return; }
+  if (!confirm('Remove this advertiser from the list?')) return;
+  _discoveryData = _discoveryData.filter(x => String(x.id) !== String(id));
   saveDiscoveryData();
   renderDiscovery();
 }
 
+function editarAdCount(id) {
+  const d = _discoveryData.find(x => String(x.id) === String(id));
+  if (!d) return;
+  const novo = prompt('New active ad count for "' + d.name + '":', d.adCount);
+  if (novo === null) return;
+  const n = parseInt(novo);
+  if (isNaN(n) || n < 0) { showToast('Invalid number', 'info'); return; }
+  d.adCount = n;
+  d.updatedAt = new Date().toISOString();
+  saveDiscoveryData();
+  renderDiscovery();
+}
+
+function renderDiscQuickKw() {
+  const el = document.getElementById('disc-quick-kw');
+  if (!el) return;
+  const allKw = Object.values(NICHE_CONFIG).flatMap(n => n.keywords.slice(0, 4));
+  const topKw = allKw.slice(0, 16);
+  el.innerHTML = '<span style="font-size:10px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;padding:4px 0">Popular keywords:</span>' +
+    topKw.map(k => `<button onclick="document.getElementById('ad-kw-input').value='${escHtml(k)}';buscarAdLibraryDisc()" style="padding:3px 10px;background:var(--bg-3);border:1px solid var(--border);border-radius:12px;color:var(--text-2);font-size:11px;cursor:pointer;font-family:inherit;white-space:nowrap">${escHtml(k)}</button>`).join('');
+}
+
 function renderDiscovery() {
-  const filtered = _nichoF === 'all' ? _discoveryData : _discoveryData.filter(d => d.nicho === _nichoF);
-  document.getElementById('disc-table').innerHTML = filtered.length
-    ? `<table>
-        <thead><tr><th>Brand</th><th>Niche</th><th>Website</th><th>Notes</th><th>Added</th><th>Actions</th></tr></thead>
-        <tbody>${filtered.map(d => `<tr>
-          <td style="font-weight:600">${escHtml(d.name)}</td>
-          <td><span class="brand-niche" style="background:${nicheColor(d.nicho)}22;color:${nicheColor(d.nicho)};margin:0">${nicheLabel(d.nicho)}</span></td>
-          <td style="font-size:11px">${d.url ? `<a href="https://${escHtml(d.url)}" target="_blank" style="color:var(--accent)">${escHtml(d.url)}</a>` : '-'}</td>
-          <td style="font-size:11px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escHtml(d.notes)}">${escHtml(d.notes)}</td>
-          <td style="font-size:11px;font-family:'JetBrains Mono',monospace;white-space:nowrap">${d.added === 'seed' ? '<span style="color:var(--text-3)">seed</span>' : d.added}</td>
-          <td style="white-space:nowrap">
-            <a href="https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=US&search_type=keyword_unordered&q=${encodeURIComponent(d.name)}" target="_blank" style="color:var(--accent);font-size:11px;margin-right:8px" title="Search Ad Library">Ad Library</a>
-            ${d.added !== 'seed' ? `<button onclick="removeDiscovery('${d.id}')" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:11px;font-family:inherit" title="Remove">Remove</button>` : ''}
+  const container = document.getElementById('disc-table');
+  const empty = document.getElementById('disc-empty');
+  const stats = document.getElementById('disc-stats');
+  if (!_discoveryData.length) {
+    container.innerHTML = '';
+    empty.style.display = 'block';
+    stats.style.display = 'none';
+    updateDiscBadge();
+    return;
+  }
+  empty.style.display = 'none';
+  stats.style.display = 'grid';
+  const sorted = [..._discoveryData].sort((a, b) => (b.adCount||0) - (a.adCount||0));
+  const maxAds = Math.max(...sorted.map(d => d.adCount || 0));
+  const monitorando = sorted.filter(d => d.monitorando).length;
+  const totalAds = sorted.reduce((s, d) => s + (d.adCount||0), 0);
+  const avgAds = sorted.length ? Math.round(totalAds / sorted.length) : 0;
+  stats.innerHTML = `
+    <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:8px;padding:12px 14px">
+      <div style="font-size:20px;font-weight:700;color:var(--text-1)">${sorted.length}</div>
+      <div style="font-size:10px;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px">Discovered</div>
+    </div>
+    <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:8px;padding:12px 14px">
+      <div style="font-size:20px;font-weight:700;color:var(--green)">${monitorando}</div>
+      <div style="font-size:10px;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px">Monitoring</div>
+    </div>
+    <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:8px;padding:12px 14px">
+      <div style="font-size:20px;font-weight:700;color:var(--accent)">${maxAds}</div>
+      <div style="font-size:10px;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px">Top Scale Score</div>
+    </div>
+    <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:8px;padding:12px 14px">
+      <div style="font-size:20px;font-weight:700;color:var(--purple)">${avgAds}</div>
+      <div style="font-size:10px;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px">Avg Ads</div>
+    </div>`;
+  container.innerHTML = `
+    <div style="overflow-x:auto">
+      <table><thead><tr>
+        <th style="width:40px">#</th>
+        <th>Advertiser</th>
+        <th>Domain</th>
+        <th>Scale Score</th>
+        <th style="min-width:100px">Bar</th>
+        <th>Keywords</th>
+        <th>Mechanism</th>
+        <th>Status</th>
+        <th>Updated</th>
+        <th style="min-width:160px">Actions</th>
+      </tr></thead>
+      <tbody>${sorted.map((d, i) => {
+        const pct = maxAds > 0 ? Math.round((d.adCount||0) / maxAds * 100) : 0;
+        const statusCls = d.seed ? 'lancamento' : d.monitorando ? 'escalado' : 'teste';
+        const statusLabel = d.seed ? 'REFERENCE' : d.monitorando ? 'MONITORING' : 'DISCOVERED';
+        const updDate = d.updatedAt ? new Date(d.updatedAt).toLocaleDateString('en-US') : '';
+        const bibUrl = d.pageId
+          ? 'https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=US&view_all_page_id=' + d.pageId + '&search_type=page'
+          : 'https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=US&search_type=keyword_unordered&q=' + encodeURIComponent(d.name);
+        return `<tr>
+          <td><div class="rank-num rank-${i < 3 ? i+1 : 4}">${i+1}</div></td>
+          <td>
+            <div style="font-weight:600">${escHtml(d.name)}</div>
+            ${d.pageId ? '<div style="font-size:10px;color:var(--text-4);font-family:monospace">' + escHtml(d.pageId) + '</div>' : ''}
           </td>
-        </tr>`).join('')}</tbody></table>`
-    : '<div class="empty-state"><p>No brands discovered yet. Click "+ Add Brand" to start tracking.</p></div>';
-  document.getElementById('discovery-badge').textContent = _discoveryData.length;
+          <td style="font-size:11px">${d.domain ? '<a href="https://' + escHtml(d.domain) + '" target="_blank" style="color:var(--cyan);text-decoration:none">' + escHtml(d.domain) + '</a>' : '-'}</td>
+          <td style="font-weight:700;font-size:16px;color:${(d.adCount||0) >= 100 ? 'var(--green)' : (d.adCount||0) >= 30 ? 'var(--accent)' : 'var(--text-2)'}">${d.adCount||0}</td>
+          <td><div class="score-bar"><div class="score-fill" style="width:${pct}%;background:${(d.adCount||0) >= 100 ? 'var(--green)' : (d.adCount||0) >= 30 ? 'var(--accent)' : 'var(--text-3)'}"></div></div></td>
+          <td style="font-size:11px;color:var(--text-3)">${(d.keywords||[]).length ? (d.keywords||[]).map(k => '<span style="display:inline-block;padding:1px 6px;background:var(--bg-3);border-radius:3px;font-size:10px;margin:1px">' + escHtml(k) + '</span>').join(' ') : '-'}</td>
+          <td style="font-size:11px;color:var(--text-2);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escHtml(d.mech||'')}">${d.mech ? escHtml(d.mech) : '-'}</td>
+          <td><span class="status-chip status-${statusCls}">${statusLabel}</span></td>
+          <td style="font-size:11px;color:var(--text-3)">${updDate}</td>
+          <td>
+            <div style="display:flex;gap:4px;flex-wrap:wrap">
+              <a href="${bibUrl}" target="_blank" style="padding:3px 8px;background:var(--accent-bg);color:var(--accent);border-radius:4px;font-size:10px;font-weight:600;text-decoration:none;border:1px solid var(--accent)">Ad Library</a>
+              <button onclick="toggleMonitorar('${d.id}')" style="padding:3px 8px;background:${d.monitorando ? 'var(--green-bg)' : 'var(--bg-3)'};color:${d.monitorando ? 'var(--green)' : 'var(--text-2)'};border:1px solid ${d.monitorando ? 'var(--green)' : 'var(--border)'};border-radius:4px;font-size:10px;font-weight:600;cursor:pointer;font-family:inherit">${d.monitorando ? 'Monitoring' : 'Monitor'}</button>
+              <button onclick="editarAdCount('${d.id}')" style="padding:3px 6px;background:var(--bg-3);border:1px solid var(--border);border-radius:4px;color:var(--text-3);font-size:10px;cursor:pointer;font-family:inherit" title="Update ad count">&#9998;</button>
+              ${d.seed ? '' : `<button onclick="removeDiscovery('${d.id}')" style="padding:3px 6px;background:var(--red-bg);border:none;border-radius:4px;color:var(--red);font-size:10px;cursor:pointer;font-family:inherit" title="Remove">X</button>`}
+            </div>
+          </td>
+        </tr>`;
+      }).join('')}</tbody></table>
+    </div>`;
+  updateDiscBadge();
 }
 
 // ===== RICH CATALOG ACTIONS =====
