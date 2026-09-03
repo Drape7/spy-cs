@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Creative Intel</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root {
+  --bg-0: #06090f;
+  --bg-1: #0c1220;
+  --bg-2: #131d33;
+  --bg-3: #1a2744;
+  --bg-4: #223055;
+  --bg-hover: #1e2d4a;
+  --border: #1e2d4a;
+  --border-2: #2a3d5e;
+  --text-1: #eaf0fa;
+  --text-2: #94a3c0;
+  --text-3: #5e7094;
+  --text-4: #3d4f6e;
+  --accent: #3b82f6;
+  --accent-2: #60a5fa;
+  --accent-bg: rgba(59,130,246,0.10);
+  --green: #22c55e;
+  --green-bg: rgba(34,197,94,0.10);
+  --yellow: #eab308;
+  --yellow-bg: rgba(234,179,8,0.10);
+  --red: #ef4444;
+  --red-bg: rgba(239,68,68,0.10);
+  --orange: #f97316;
+  --orange-bg: rgba(249,115,22,0.10);
+  --purple: #a855f7;
+  --purple-bg: rgba(168,85,247,0.10);
+  --cyan: #06b6d4;
+  --cyan-bg: rgba(6,182,212,0.10);
+  --pink: #ec4899;
+  --pink-bg: rgba(236,72,153,0.10);
+  --sidebar-w: 240px;
+  --header-h: 60px;
+}
+@media(prefers-color-scheme:light){:root:not([data-theme="dark"]){
+  --bg-0:#f0f2f5;--bg-1:#ffffff;--bg-2:#f8f9fc;--bg-3:#eef1f6;--bg-4:#e2e7f0;
+  --bg-hover:#f0f3f8;--border:#dce1ea;--border-2:#c8cfdb;
+  --text-1:#0f172a;--text-2:#475569;--text-3:#94a3b8;--text-4:#cbd5e1;
+  --accent:#2563eb;--accent-2:#3b82f6;--accent-bg:rgba(37,99,235,0.06);
+  --green:#16a34a;--green-bg:rgba(22,163,74,0.06);
+  --yellow:#ca8a04;--yellow-bg:rgba(202,138,4,0.06);
+  --red:#dc2626;--red-bg:rgba(220,38,38,0.06);
+  --orange:#ea580c;--orange-bg:rgba(234,88,12,0.06);
+  --purple:#9333ea;--purple-bg:rgba(147,51,234,0.06);
+  --cyan:#0891b2;--cyan-bg:rgba(8,145,178,0.06);
+  --pink:#db2777;--pink-bg:rgba(219,39,119,0.06);
+}}
+:root[data-theme="dark"]{
+  --bg-0:#06090f;--bg-1:#0c1220;--bg-2:#131d33;--bg-3:#1a2744;--bg-4:#223055;
+  --bg-hover:#1e2d4a;--border:#1e2d4a;--border-2:#2a3d5e;
+  --text-1:#eaf0fa;--text-2:#94a3c0;--text-3:#5e7094;--text-4:#3d4f6e;
+  --accent:#3b82f6;--accent-2:#60a5fa;--accent-bg:rgba(59,130,246,0.10);
+  --green:#22c55e;--green-bg:rgba(34,197,94,0.10);
+  --yellow:#eab308;--yellow-bg:rgba(234,179,8,0.10);
+  --red:#ef4444;--red-bg:rgba(239,68,68,0.10);
+  --orange:#f97316;--orange-bg:rgba(249,115,22,0.10);
+  --purple:#a855f7;--purple-bg:rgba(168,85,247,0.10);
+  --cyan:#06b6d4;--cyan-bg:rgba(6,182,212,0.10);
+  --pink:#ec4899;--pink-bg:rgba(236,72,153,0.10);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg-0);color:var(--text-1);min-height:100vh;overflow-x:hidden}
+.app{display:flex;min-height:100vh}
+
+.sidebar{width:var(--sidebar-w);background:var(--bg-1);border-right:1px solid var(--border);position:fixed;top:0;left:0;bottom:0;z-index:100;display:flex;flex-direction:column;transition:transform .3s}
+.main{margin-left:var(--sidebar-w);flex:1;min-width:0}
+
+.sidebar-brand{padding:20px 20px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border)}
+.brand-icon{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--purple));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#fff;flex-shrink:0}
+.brand-text{font-weight:700;font-size:15px;letter-spacing:-.3px}
+.brand-sub{font-size:11px;color:var(--text-3);margin-top:1px}
+.sidebar-nav{flex:1;padding:12px 10px;overflow-y:auto}
+.nav-section{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-4);padding:14px 12px 6px;margin-top:4px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;color:var(--text-2);transition:all .15s;margin-bottom:2px}
+.nav-item:hover{background:var(--bg-hover);color:var(--text-1)}
+.nav-item.active{background:var(--accent-bg);color:var(--accent)}
+.nav-item .icon{width:18px;text-align:center;font-size:14px;flex-shrink:0}
+.nav-badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:var(--bg-3);color:var(--text-3);margin-left:auto}
+.sidebar-footer{padding:14px 16px;border-top:1px solid var(--border);font-size:11px;color:var(--text-3)}
+
+.topbar{height:var(--header-h);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:var(--bg-1);position:sticky;top:0;z-index:50}
+.topbar-left{display:flex;align-items:center;gap:12px}
+.topbar-title{font-weight:700;font-size:16px;letter-spacing:-.3px}
+.topbar-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.burger{display:none;background:none;border:none;color:var(--text-1);font-size:22px;cursor:pointer}
+
+.pill{font-size:11px;font-weight:600;padding:4px 10px;border-radius:6px;cursor:pointer;border:1px solid transparent;transition:all .15s;user-select:none}
+.pill-niche{background:var(--bg-3);color:var(--text-2)}
+.pill-niche:hover{background:var(--bg-4)}
+.pill-niche.active{color:#fff}
+.pill-live{background:var(--green-bg);color:var(--green);border-color:var(--green)}
+
+.content{padding:24px}
+.section{display:none}
+.section.active{display:block}
+
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:24px}
+.kpi{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;padding:18px 20px}
+.kpi-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--text-3);margin-bottom:6px}
+.kpi-value{font-size:28px;font-weight:800;letter-spacing:-1px;font-family:'JetBrains Mono',monospace}
+.kpi-sub{font-size:11px;color:var(--text-3);margin-top:4px}
+
+.card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px}
+.card h3{font-size:14px;font-weight:700;margin-bottom:12px}
+
+.brand-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.brand-card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;padding:20px;transition:border-color .15s}
+.brand-card:hover{border-color:var(--accent)}
+.brand-name{font-size:15px;font-weight:700;margin-bottom:4px}
+.brand-niche{font-size:11px;font-weight:600;padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:8px}
+.brand-meta{font-size:12px;color:var(--text-2);line-height:1.7}
+.brand-meta span{color:var(--text-3)}
+
+.table-card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.table-card table{width:100%;border-collapse:collapse;font-size:12px}
+.table-card th{background:var(--bg-3);padding:10px 14px;text-align:left;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-3);cursor:pointer;user-select:none;white-space:nowrap;border-bottom:1px solid var(--border)}
+.table-card th:hover{color:var(--text-1)}
+.table-card td{padding:10px 14px;border-bottom:1px solid var(--border);vertical-align:middle}
+.table-card tr:last-child td{border-bottom:none}
+.table-card tr:hover td{background:var(--bg-hover)}
+
+.tag{font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;display:inline-block;margin:1px 2px}
+.tag-video{background:var(--accent-bg);color:var(--accent)}
+.tag-static{background:var(--purple-bg);color:var(--purple)}
+.tag-carousel{background:var(--orange-bg);color:var(--orange)}
+.tag-ugc{background:var(--green-bg);color:var(--green)}
+
+.coverage-grid{display:grid;grid-template-columns:1fr;gap:16px}
+.coverage-table{overflow-x:auto}
+.coverage-table table{min-width:600px}
+.coverage-cell{width:40px;height:32px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;font-family:'JetBrains Mono',monospace}
+.cov-high{background:var(--green-bg);color:var(--green)}
+.cov-med{background:var(--yellow-bg);color:var(--yellow)}
+.cov-low{background:var(--orange-bg);color:var(--orange)}
+.cov-zero{background:var(--bg-3);color:var(--text-4)}
+
+.awareness-bar{display:flex;height:24px;border-radius:6px;overflow:hidden;margin:4px 0}
+.awareness-bar div{display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;min-width:20px}
+
+.gap-list{list-style:none}
+.gap-item{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
+.gap-item:last-child{border-bottom:none}
+.gap-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.gap-text{flex:1}
+.gap-title{font-size:13px;font-weight:600}
+.gap-desc{font-size:11px;color:var(--text-3);margin-top:2px}
+.gap-score{font-size:20px;font-weight:800;font-family:'JetBrains Mono',monospace}
+
+.filter-bar{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.filter-bar select,.filter-bar input{background:var(--bg-3);border:1px solid var(--border);color:var(--text-1);padding:6px 12px;border-radius:6px;font-size:12px;font-family:inherit}
+.filter-bar input{min-width:200px}
+
+.empty-state{text-align:center;padding:60px 20px;color:var(--text-3)}
+.empty-state .empty-icon{font-size:48px;margin-bottom:16px;opacity:.5}
+.empty-state p{font-size:13px;max-width:400px;margin:0 auto;line-height:1.6}
+
+.toast{position:fixed;bottom:20px;right:20px;padding:12px 20px;border-radius:8px;font-size:12px;font-weight:600;z-index:9999;max-width:400px;animation:toastin .3s ease}
+@keyframes toastin{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.toast-ok{background:var(--green);color:#fff}
+.toast-info{background:var(--accent);color:#fff}
+
+.ctrl-rank{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--text-3)}
+.ctrl-bar{height:6px;border-radius:3px;background:var(--bg-4);flex:1;max-width:120px;overflow:hidden}
+.ctrl-bar-fill{height:100%;border-radius:3px;background:var(--green)}
+
+.compare-col{flex:1;min-width:0}
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.compare-vs{display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:var(--text-4);padding:20px 0}
+
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0}
+  .burger{display:block}
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .brand-grid{grid-template-columns:1fr}
+  .compare-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon">CI</div>
+      <div>
+        <div class="brand-text">Creative Intel</div>
+        <div class="brand-sub">CS Multi-Niche</div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">Core</div>
+      <div class="nav-item active" data-section="overview"><span class="icon">&#9678;</span>Overview</div>
+      <div class="nav-item" data-section="brands"><span class="icon">&#9733;</span>Brands<span class="nav-badge" id="brands-badge">0</span></div>
+      <div class="nav-item" data-section="catalog"><span class="icon">&#9881;</span>Ad Catalog<span class="nav-badge" id="catalog-badge">0</span></div>
+      <div class="nav-item" data-section="controls"><span class="icon">&#9650;</span>Controls<span class="nav-badge" id="controls-badge" style="background:var(--green-bg);color:var(--green)">0</span></div>
+      <div class="nav-section">Strategy</div>
+      <div class="nav-item" data-section="coverage"><span class="icon">&#9670;</span>Coverage Map</div>
+      <div class="nav-item" data-section="gaps"><span class="icon">&#128161;</span>Gaps<span class="nav-badge" id="gaps-badge" style="background:var(--red-bg);color:var(--red)">0</span></div>
+      <div class="nav-item" data-section="angles"><span class="icon">&#128373;</span>Angles</div>
+      <div class="nav-item" data-section="spy-reports"><span class="icon">&#128270;</span>Spy Reports</div>
+      <div class="nav-section">Analysis</div>
+      <div class="nav-item" data-section="timeline"><span class="icon">&#8986;</span>Timeline</div>
+      <div class="nav-item" data-section="compare"><span class="icon">&#9878;</span>Compare</div>
+      <div class="nav-item" data-section="teardowns"><span class="icon">&#128196;</span>Teardowns</div>
+      <div class="nav-section">Tools</div>
+      <div class="nav-item" data-section="vsl-extract"><span class="icon">&#127909;</span>Extract VSL</div>
+      <div class="nav-item" data-section="config"><span class="icon">&#9881;</span>Config</div>
+    </nav>
+    <div class="sidebar-footer">
+      v1.0 &bull; Operator: Tiago Felipe<br>
+      US/EU DTC &bull; 4 Niches
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="burger" id="burger">&#9776;</button>
+        <span class="topbar-title" id="topbar-title">Overview</span>
+      </div>
+      <div class="topbar-right" id="niche-filters"></div>
+    </header>
+
+    <div class="content">
+      <div class="section active" id="sec-overview">
+        <div class="kpi-grid" id="kpi-grid"></div>
+        <div class="card"><h3>Top Brands by Ad Volume</h3><div id="overview-ranking"></div></div>
+        <div class="card"><h3>Format Distribution</h3><div id="overview-formats"></div></div>
+      </div>
+
+      <div class="section" id="sec-brands"><div class="brand-grid" id="brand-grid"></div></div>
+
+      <div class="section" id="sec-catalog">
+        <div class="filter-bar" id="catalog-filters"></div>
+        <div class="table-card" id="catalog-table"></div>
+      </div>
+
+      <div class="section" id="sec-controls">
+        <p style="font-size:12px;color:var(--text-3);margin-bottom:16px;line-height:1.5">Probable controls: oldest ads with the most variations. Longevity + variation count = performance signal.</p>
+        <div class="table-card" id="controls-table"></div>
+      </div>
+
+      <div class="section" id="sec-coverage">
+        <p style="font-size:12px;color:var(--text-3);margin-bottom:16px;line-height:1.5">Coverage map: angle x format by brand. Green = well covered, yellow = light coverage, red = gap.</p>
+        <div class="coverage-grid" id="coverage-grid"></div>
+      </div>
+
+      <div class="section" id="sec-gaps">
+        <p style="font-size:12px;color:var(--text-3);margin-bottom:16px;line-height:1.5">Gaps across all monitored brands: formats, angles, and awareness levels that are under-exploited.</p>
+        <div class="card"><h3>Format Gaps</h3><ul class="gap-list" id="format-gaps"></ul></div>
+        <div class="card"><h3>Angle Gaps</h3><ul class="gap-list" id="angle-gaps"></ul></div>
+        <div class="card"><h3>Awareness Gaps</h3><ul class="gap-list" id="awareness-gaps"></ul></div>
+      </div>
+
+      <div class="section" id="sec-angles">
+        <p style="font-size:12px;color:var(--text-3);margin-bottom:16px;line-height:1.5">Angle distribution across brands. Identifies concentration and whitespace.</p>
+        <div class="table-card" id="angles-table"></div>
+      </div>
+
+      <div class="section" id="sec-spy-reports">
+        <div class="empty-state"><div class="empty-icon">&#128270;</div><p>Spy reports will appear here as you add them. Each report covers patterns, gaps, and strategic implications for a niche.</p></div>
+      </div>
+
+      <div class="section" id="sec-timeline">
+        <p style="font-size:12px;color:var(--text-3);margin-bottom:16px;line-height:1.5">Timeline of ad launches. Identifies testing cadence and seasonal patterns.</p>
+        <div class="table-card" id="timeline-table"></div>
+      </div>
+
+      <div class="section" id="sec-compare">
+        <div class="filter-bar">
+          <select id="compare-a"></select>
+          <span style="color:var(--text-4);font-weight:800;font-size:16px">vs</span>
+          <select id="compare-b"></select>
+          <button class="pill pill-live" onclick="renderCompare()">Compare</button>
+        </div>
+        <div class="compare-grid" id="compare-grid"></div>
+      </div>
+
+      <div class="section" id="sec-teardowns">
+        <p style="font-size:12px;color:var(--text-3);margin-bottom:16px;line-height:1.5">Links to detailed brand teardowns. Each teardown follows the CS dissection template.</p>
+        <div class="table-card" id="teardowns-table"></div>
+      </div>
+
+      <div class="section" id="sec-vsl-extract">
+        <div class="card">
+          <h3>VSL Extractor (Vturb/ConverteAI)</h3>
+          <p style="font-size:12px;color:var(--text-3);margin-bottom:16px">Paste a Vturb player URL to extract the video HLS stream, pitch time, and player config.</p>
+          <div style="display:flex;gap:8px;margin-bottom:16px">
+            <input type="text" id="vturb-url" placeholder="https://scripts.converteai.net/..." style="flex:1;background:var(--bg-3);border:1px solid var(--border);color:var(--text-1);padding:10px 14px;border-radius:8px;font-size:13px;font-family:inherit">
+            <button class="pill pill-live" onclick="extractVturb()" style="padding:10px 20px;font-size:13px">Extract</button>
+          </div>
+          <div id="vturb-result"></div>
+        </div>
+      </div>
+
+      <div class="section" id="sec-config">
+        <div class="card">
+          <h3>Supabase</h3>
+          <p style="font-size:12px;color:var(--text-3);margin-bottom:12px">Connect to your Supabase project for media storage.</p>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <input type="text" id="cfg-sb-url" placeholder="Project URL (https://xxx.supabase.co)" style="background:var(--bg-3);border:1px solid var(--border);color:var(--text-1);padding:8px 12px;border-radius:6px;font-size:12px;font-family:inherit">
+            <input type="text" id="cfg-sb-key" placeholder="Anon Key" style="background:var(--bg-3);border:1px solid var(--border);color:var(--text-1);padding:8px 12px;border-radius:6px;font-size:12px;font-family:inherit">
+            <button class="pill pill-niche" onclick="saveSbConfig()" style="align-self:flex-start;padding:8px 16px">Save</button>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Niche Keywords</h3>
+          <p style="font-size:12px;color:var(--text-3);margin-bottom:12px">Keywords per niche for Meta Ad Library searches.</p>
+          <div id="config-keywords"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== NICHE CONFIG =====
+const NICHE_CONFIG = {
+  skincare:    { label: 'Skin Care',          cor: '#ec4899', keywords: ['serum','retinol','vitamin c','collagen','anti-aging','moisturizer','sunscreen','dark spots','wrinkles','acne','hyaluronic acid','niacinamide'] },
+  apparel:     { label: 'Apparel',            cor: '#3b82f6', keywords: ['clothing','dress','fashion','activewear','sustainable fashion','basics','loungewear','denim','athleisure','everyday wear'] },
+  health:      { label: 'Health & Wellness',  cor: '#22c55e', keywords: ['supplement','gut health','weight loss','sleep','immunity','energy','metabolism','probiotics','collagen','protein','adaptogens'] },
+  accessories: { label: 'Accessories/Jewelry',cor: '#f59e0b', keywords: ['jewelry','earrings','necklace','ring','bracelet','gold plated','fine jewelry','watch','accessories','pendant'] }
+};
+
+// ===== BRANDS =====
+const BRANDS = [
+  { id:'seed', name:'Seed', nicho:'health', url:'seed.com', pageId:'', posicionamento:'Science-first probiotics. DS-01 synbiotic. "2 capsules, 24 strains, $2/day". ViaCap delivery tech.', totalAds:210, videoPercent:45, controle:'The probiotic your gut has been missing', dataUltimoScan:'2026-09-02', status:'active' },
+  { id:'ag1', name:'AG1 (Athletic Greens)', nicho:'health', url:'drinkag1.com', pageId:'', posicionamento:'All-in-one greens. "75 vitamins in 1 scoop". Massive creator network. Podcast sponsorship king.', totalAds:380, videoPercent:65, controle:'I started taking AG1 and noticed...', dataUltimoScan:'2026-09-02', status:'active' },
+  { id:'bioma', name:'Bioma', nicho:'health', url:'bioma.health', pageId:'', posicionamento:'Quiz-first weight-loss/gut. GLP-1 trend-jack. Template modular. Discount-heavy.', totalAds:1300, videoPercent:55, controle:'I tried every diet until my doctor told me...', dataUltimoScan:'2026-09-02', status:'active' },
+  { id:'armra', name:'ARMRA', nicho:'health', url:'tryarmra.com', pageId:'', posicionamento:'Colostrum revival. 400+ bioactives. "4 layers of gut wall". Attack ads vs competitors.', totalAds:210, videoPercent:50, controle:'Your gut lining is leaking and you don\'t know it', dataUltimoScan:'2026-09-02', status:'active' },
+  { id:'tatcha', name:'Tatcha', nicho:'skincare', url:'tatcha.com', pageId:'', posicionamento:'Japanese beauty rituals. Luxury-accessible. Dewy Skin Cream hero. Sephora distribution.', totalAds:85, videoPercent:40, controle:'The moisturizer that sold out 5 times', dataUltimoScan:'2026-09-02', status:'active' },
+  { id:'ordinary', name:'The Ordinary', nicho:'skincare', url:'theordinary.com', pageId:'', posicionamento:'Clinical ingredients at honest prices. Ingredient-forward. Anti-markup positioning.', totalAds:120, videoPercent:30, controle:'Why pay $80 for a serum when...', dataUltimoScan:'2026-09-02', status:'active' },
+  { id:'paulas', name:"Paula's Choice", nicho:'skincare', url:'paulaschoice.com', pageId:'', posicionamento:'Research-driven. BHA exfoliant hero. "Smart, safe beauty". Anti-hype.', totalAds:95, videoPercent:35, controle:'The BHA that changed my skin', dataUltimoScan:'2026-09-02', status:'active' },
+  { id:'vuori', name:'Vuori', nicho:'apparel', url:'vuoriclothing.com', pageId:'', posicionamento:'Performance apparel for life. Premium athleisure. "Investment in your happiness".', totalAds:150, videoPercent:60, controle:'These are the most comfortable shorts I own', dataUltimoScan:'2026-09-02', status:'active' },
+  { id:'trueclassic', name:'True Classic', nicho:'apparel', url:'trueclassictees.com', pageId:'', posicionamento:'Perfect-fit basics for men. "Designed to make you look good". Value + fit.', totalAds:280, videoPercent:70, controle:'My wife can\'t stop buying me these shirts', dataUltimoScan:'2026-09-02', status:'active' },
+  { id:'quince', name:'Quince', nicho:'apparel', url:'onequince.com', pageId:'', posicionamento:'Luxury materials, factory-direct prices. Cashmere, linen, silk. Transparent pricing.', totalAds:110, videoPercent:25, controle:'$50 cashmere that looks like $300', dataUltimoScan:'2026-09-02', status:'active' },
+  { id:'mejuri', name:'Mejuri', nicho:'accessories', url:'mejuri.com', pageId:'', posicionamento:'Fine jewelry for everyday. "Luxury for your damn self". 14k gold, vermeil.', totalAds:130, videoPercent:35, controle:'Fine jewelry you never take off', dataUltimoScan:'2026-09-02', status:'active' },
+  { id:'analuisa', name:'Ana Luisa', nicho:'accessories', url:'analuisa.com', pageId:'', posicionamento:'Sustainable jewelry. Carbon-neutral. "Guilt-free luxury". Mid-price.', totalAds:90, videoPercent:40, controle:'Jewelry that doesn\'t cost the earth', dataUltimoScan:'2026-09-02', status:'active' },
+  { id:'gorjana', name:'Gorjana', nicho:'accessories', url:'gorjana.com', pageId:'', posicionamento:'California-cool layering jewelry. Gold-dipped. Stack/layer positioning.', totalAds:75, videoPercent:30, controle:'The gold layering necklace everyone asks about', dataUltimoScan:'2026-09-02', status:'active' }
+];
+
+// ===== ADS CATALOG =====
+const ADS_CATALOG = {
+  seed:[
+    {adId:'seed-001',formato:'video',duracao:'30s',angulo:'science-authority',produto:'DS-01 Daily Synbiotic',beneficios:['gut health','24 strains','ViaCap'],awareness:'solution-aware',hookText:'Most probiotics die before they reach your gut',variacoes:12,dataInicio:'2026-05-10',isControle:true,link:''},
+    {adId:'seed-002',formato:'static',duracao:'',angulo:'ingredient-education',produto:'DS-01 Daily Synbiotic',beneficios:['24 strains','clinically studied'],awareness:'problem-aware',hookText:'Not all probiotics are created equal',variacoes:8,dataInicio:'2026-06-15',isControle:false,link:''},
+    {adId:'seed-003',formato:'video',duracao:'60s',angulo:'testimonial-transformation',produto:'DS-01 Daily Synbiotic',beneficios:['bloating','digestion','skin'],awareness:'problem-aware',hookText:'I was skeptical until week 3',variacoes:5,dataInicio:'2026-07-20',isControle:false,link:''},
+    {adId:'seed-004',formato:'carousel',duracao:'',angulo:'comparison',produto:'DS-01 Daily Synbiotic',beneficios:['survivability','vs competitors'],awareness:'product-aware',hookText:'Seed vs other probiotics: the science',variacoes:3,dataInicio:'2026-08-01',isControle:false,link:''}
+  ],
+  ag1:[
+    {adId:'ag1-001',formato:'video',duracao:'45s',angulo:'creator-endorsement',produto:'AG1',beneficios:['75 vitamins','energy','gut health'],awareness:'solution-aware',hookText:'I started taking AG1 every morning and noticed...',variacoes:22,dataInicio:'2026-03-01',isControle:true,link:''},
+    {adId:'ag1-002',formato:'video',duracao:'30s',angulo:'routine-integration',produto:'AG1',beneficios:['morning routine','convenience'],awareness:'most-aware',hookText:'My non-negotiable morning routine',variacoes:15,dataInicio:'2026-04-15',isControle:false,link:''},
+    {adId:'ag1-003',formato:'static',duracao:'',angulo:'ingredient-stack',produto:'AG1',beneficios:['75 vitamins','replaces 10 supplements'],awareness:'solution-aware',hookText:'Replace your entire supplement cabinet',variacoes:6,dataInicio:'2026-06-01',isControle:false,link:''},
+    {adId:'ag1-004',formato:'video',duracao:'15s',angulo:'ugc-reaction',produto:'AG1',beneficios:['taste','convenience'],awareness:'product-aware',hookText:'POV: trying AG1 for the first time',variacoes:9,dataInicio:'2026-07-10',isControle:false,link:''}
+  ],
+  bioma:[
+    {adId:'bioma-001',formato:'video',duracao:'90s',angulo:'quiz-funnel',produto:'Bioma Probiotics',beneficios:['weight loss','gut health','GLP-1'],awareness:'problem-aware',hookText:'Take this 60-second quiz to find your probiotic match',variacoes:35,dataInicio:'2026-01-15',isControle:true,link:''},
+    {adId:'bioma-002',formato:'video',duracao:'60s',angulo:'doctor-authority',produto:'Bioma Probiotics',beneficios:['GLP-1','metabolism'],awareness:'solution-aware',hookText:'My doctor told me about a natural way to boost GLP-1',variacoes:18,dataInicio:'2026-03-20',isControle:false,link:''},
+    {adId:'bioma-003',formato:'static',duracao:'',angulo:'before-after',produto:'Bioma Probiotics',beneficios:['weight loss','bloating'],awareness:'problem-aware',hookText:'30 days of Bioma changed everything',variacoes:12,dataInicio:'2026-05-01',isControle:false,link:''},
+    {adId:'bioma-004',formato:'carousel',duracao:'',angulo:'social-proof',produto:'Bioma Probiotics',beneficios:['reviews','results'],awareness:'most-aware',hookText:'50,000+ 5-star reviews can\'t be wrong',variacoes:7,dataInicio:'2026-06-15',isControle:false,link:''}
+  ],
+  armra:[
+    {adId:'armra-001',formato:'video',duracao:'45s',angulo:'problem-agitation',produto:'ARMRA Colostrum',beneficios:['gut lining','immunity','400+ bioactives'],awareness:'problem-aware',hookText:'Your gut lining is leaking and you don\'t know it',variacoes:14,dataInicio:'2026-04-01',isControle:true,link:''},
+    {adId:'armra-002',formato:'video',duracao:'30s',angulo:'attack-competitor',produto:'ARMRA Colostrum',beneficios:['vs probiotics','gut wall'],awareness:'solution-aware',hookText:'Probiotics can\'t fix a leaky gut wall',variacoes:9,dataInicio:'2026-05-20',isControle:false,link:''},
+    {adId:'armra-003',formato:'static',duracao:'',angulo:'ingredient-education',produto:'ARMRA Colostrum',beneficios:['colostrum','bioactives'],awareness:'unaware',hookText:'The first food nature designed for immunity',variacoes:4,dataInicio:'2026-07-01',isControle:false,link:''}
+  ],
+  tatcha:[
+    {adId:'tatcha-001',formato:'video',duracao:'30s',angulo:'luxury-ritual',produto:'Dewy Skin Cream',beneficios:['hydration','glow','Japanese beauty'],awareness:'product-aware',hookText:'The moisturizer that sold out 5 times',variacoes:16,dataInicio:'2026-02-01',isControle:true,link:''},
+    {adId:'tatcha-002',formato:'static',duracao:'',angulo:'before-after',produto:'Dewy Skin Cream',beneficios:['dewy skin','anti-aging'],awareness:'problem-aware',hookText:'Dry skin to glass skin in 7 days',variacoes:8,dataInicio:'2026-05-10',isControle:false,link:''},
+    {adId:'tatcha-003',formato:'video',duracao:'15s',angulo:'ugc-reaction',produto:'Dewy Skin Cream',beneficios:['texture','glow'],awareness:'solution-aware',hookText:'Putting on Tatcha for the first time',variacoes:5,dataInicio:'2026-07-01',isControle:false,link:''}
+  ],
+  ordinary:[
+    {adId:'ord-001',formato:'static',duracao:'',angulo:'price-disruption',produto:'Niacinamide 10%',beneficios:['pores','oil control','$6'],awareness:'solution-aware',hookText:'Why pay $80 for a serum when this $6 one works better',variacoes:20,dataInicio:'2026-01-20',isControle:true,link:''},
+    {adId:'ord-002',formato:'carousel',duracao:'',angulo:'routine-builder',produto:'Multiple',beneficios:['routine','ingredients'],awareness:'problem-aware',hookText:'Build your perfect skincare routine for under $30',variacoes:11,dataInicio:'2026-04-01',isControle:false,link:''},
+    {adId:'ord-003',formato:'video',duracao:'30s',angulo:'ingredient-education',produto:'Retinol 0.5%',beneficios:['anti-aging','wrinkles'],awareness:'solution-aware',hookText:'The only anti-aging ingredient backed by 50 years of research',variacoes:6,dataInicio:'2026-06-15',isControle:false,link:''}
+  ],
+  paulas:[
+    {adId:'pc-001',formato:'video',duracao:'45s',angulo:'product-hero',produto:'2% BHA Exfoliant',beneficios:['pores','blackheads','smooth skin'],awareness:'solution-aware',hookText:'The BHA exfoliant dermatologists recommend most',variacoes:18,dataInicio:'2026-03-10',isControle:true,link:''},
+    {adId:'pc-002',formato:'static',duracao:'',angulo:'social-proof',produto:'2% BHA Exfoliant',beneficios:['reviews','best-seller'],awareness:'product-aware',hookText:'Over 20 million bottles sold',variacoes:7,dataInicio:'2026-06-01',isControle:false,link:''}
+  ],
+  vuori:[
+    {adId:'vuori-001',formato:'video',duracao:'30s',angulo:'lifestyle',produto:'Kore Shorts',beneficios:['comfort','versatility','premium'],awareness:'solution-aware',hookText:'These are the most comfortable shorts I own',variacoes:14,dataInicio:'2026-04-01',isControle:true,link:''},
+    {adId:'vuori-002',formato:'video',duracao:'15s',angulo:'ugc-reaction',produto:'Kore Shorts',beneficios:['comfort','fit'],awareness:'product-aware',hookText:'My husband won\'t wear anything else',variacoes:8,dataInicio:'2026-06-20',isControle:false,link:''},
+    {adId:'vuori-003',formato:'static',duracao:'',angulo:'product-feature',produto:'DreamKnit',beneficios:['softness','loungewear'],awareness:'unaware',hookText:'Softer than your favorite old tee',variacoes:4,dataInicio:'2026-07-15',isControle:false,link:''}
+  ],
+  trueclassic:[
+    {adId:'tc-001',formato:'video',duracao:'30s',angulo:'fit-transformation',produto:'Classic Tee',beneficios:['fit','muscles','confidence'],awareness:'problem-aware',hookText:'Stop wearing shirts that make you look 20 lbs heavier',variacoes:28,dataInicio:'2026-02-01',isControle:true,link:''},
+    {adId:'tc-002',formato:'video',duracao:'45s',angulo:'ugc-couple',produto:'Classic Tee',beneficios:['fit','wife-approved'],awareness:'product-aware',hookText:'My wife can\'t stop buying me these shirts',variacoes:15,dataInicio:'2026-04-10',isControle:false,link:''},
+    {adId:'tc-003',formato:'carousel',duracao:'',angulo:'before-after',produto:'Multiple',beneficios:['fit comparison','value'],awareness:'solution-aware',hookText:'Regular fit vs True Classic fit',variacoes:10,dataInicio:'2026-06-01',isControle:false,link:''}
+  ],
+  quince:[
+    {adId:'quince-001',formato:'static',duracao:'',angulo:'price-disruption',produto:'Cashmere Sweater',beneficios:['cashmere','factory-direct','$50'],awareness:'solution-aware',hookText:'$50 cashmere that looks like $300',variacoes:12,dataInicio:'2026-03-01',isControle:true,link:''},
+    {adId:'quince-002',formato:'video',duracao:'30s',angulo:'transparency',produto:'Multiple',beneficios:['factory-direct','no markup'],awareness:'unaware',hookText:'We show you exactly what your clothes cost to make',variacoes:6,dataInicio:'2026-05-15',isControle:false,link:''},
+    {adId:'quince-003',formato:'carousel',duracao:'',angulo:'comparison',produto:'Multiple',beneficios:['vs luxury brands','same quality'],awareness:'product-aware',hookText:'Same factories, fraction of the price',variacoes:4,dataInicio:'2026-07-01',isControle:false,link:''}
+  ],
+  mejuri:[
+    {adId:'mej-001',formato:'video',duracao:'30s',angulo:'self-purchase',produto:'Bold Collection',beneficios:['fine jewelry','everyday','14k gold'],awareness:'solution-aware',hookText:'Fine jewelry you never take off',variacoes:11,dataInicio:'2026-03-15',isControle:true,link:''},
+    {adId:'mej-002',formato:'static',duracao:'',angulo:'gifting',produto:'Multiple',beneficios:['gift','under $100'],awareness:'most-aware',hookText:'The gift she actually wants',variacoes:8,dataInicio:'2026-05-01',isControle:false,link:''},
+    {adId:'mej-003',formato:'carousel',duracao:'',angulo:'styling',produto:'Layering Set',beneficios:['layering','stack'],awareness:'product-aware',hookText:'How to layer like a jewelry editor',variacoes:5,dataInicio:'2026-07-10',isControle:false,link:''}
+  ],
+  analuisa:[
+    {adId:'al-001',formato:'video',duracao:'30s',angulo:'sustainability',produto:'Multiple',beneficios:['carbon-neutral','recycled metals'],awareness:'unaware',hookText:'Beautiful jewelry shouldn\'t cost the earth',variacoes:9,dataInicio:'2026-04-01',isControle:true,link:''},
+    {adId:'al-002',formato:'static',duracao:'',angulo:'price-value',produto:'Tennis Bracelet',beneficios:['affordable luxury','under $80'],awareness:'solution-aware',hookText:'A tennis bracelet that doesn\'t break the bank',variacoes:6,dataInicio:'2026-06-15',isControle:false,link:''}
+  ],
+  gorjana:[
+    {adId:'gor-001',formato:'video',duracao:'15s',angulo:'lifestyle',produto:'Parker Necklace',beneficios:['layering','California','gold'],awareness:'solution-aware',hookText:'The gold layering necklace everyone asks about',variacoes:10,dataInicio:'2026-03-01',isControle:true,link:''},
+    {adId:'gor-002',formato:'static',duracao:'',angulo:'styling',produto:'Layering Set',beneficios:['stack','personalize'],awareness:'product-aware',hookText:'3 necklaces, infinite combinations',variacoes:4,dataInicio:'2026-06-01',isControle:false,link:''}
+  ]
+};
+
+// ===== AWARENESS LEVELS =====
+const AWARENESS_LEVELS = ['unaware','problem-aware','solution-aware','product-aware','most-aware'];
+const AWARENESS_COLORS = {unaware:'#ef4444','problem-aware':'#f97316','solution-aware':'#eab308','product-aware':'#3b82f6','most-aware':'#22c55e'};
+const AWARENESS_SHORT = {unaware:'UN','problem-aware':'PR','solution-aware':'SO','product-aware':'PD','most-aware':'MO'};
+
+// ===== ALL KNOWN FORMATS & ANGLES =====
+const ALL_FORMATS = ['video','static','carousel','ugc','advertorial','listicle'];
+const ALL_ANGLES = ['testimonial-transformation','science-authority','ingredient-education','comparison','creator-endorsement','routine-integration','ingredient-stack','ugc-reaction','quiz-funnel','doctor-authority','before-after','social-proof','problem-agitation','attack-competitor','luxury-ritual','price-disruption','routine-builder','product-hero','lifestyle','fit-transformation','ugc-couple','transparency','self-purchase','gifting','styling','sustainability','price-value','product-feature'];
+
+// ===== STATE =====
+let _nichoF = 'all';
+let _sortCol = null;
+let _sortDir = 1;
+
+// ===== COMPUTED =====
+function getAllAds(nichoFilter) {
+  const ads = [];
+  for (const brand of BRANDS) {
+    if (nichoFilter && nichoFilter !== 'all' && brand.nicho !== nichoFilter) continue;
+    const catalog = ADS_CATALOG[brand.id] || [];
+    for (const ad of catalog) {
+      ads.push({ ...ad, brandId: brand.id, brandName: brand.name, nicho: brand.nicho });
+    }
+  }
+  return ads;
+}
+
+function getFilteredBrands() {
+  if (_nichoF === 'all') return BRANDS;
+  return BRANDS.filter(b => b.nicho === _nichoF);
+}
+
+function computeControls(nichoFilter) {
+  const ads = getAllAds(nichoFilter);
+  return ads.filter(a => a.isControle).sort((a, b) => b.variacoes - a.variacoes);
+}
+
+function computeCoverage(brandId) {
+  const ads = ADS_CATALOG[brandId] || [];
+  const map = {};
+  for (const f of ALL_FORMATS) map[f] = {};
+  for (const ad of ads) {
+    if (!map[ad.formato]) map[ad.formato] = {};
+    map[ad.formato][ad.angulo] = (map[ad.formato][ad.angulo] || 0) + 1;
+  }
+  return map;
+}
+
+function computeAwarenessDist(brandId) {
+  const ads = ADS_CATALOG[brandId] || [];
+  const dist = {};
+  for (const l of AWARENESS_LEVELS) dist[l] = 0;
+  for (const ad of ads) dist[ad.awareness] = (dist[ad.awareness] || 0) + 1;
+  return dist;
+}
+
+function computeGaps(nichoFilter) {
+  const ads = getAllAds(nichoFilter);
+  const usedFormats = new Set(ads.map(a => a.formato));
+  const usedAngles = new Set(ads.map(a => a.angulo));
+  const usedAwareness = new Set(ads.map(a => a.awareness));
+  const formatGaps = ALL_FORMATS.filter(f => !usedFormats.has(f));
+  const angleGaps = ALL_ANGLES.filter(a => !usedAngles.has(a));
+  const awarenessGaps = AWARENESS_LEVELS.filter(l => !usedAwareness.has(l));
+  return { formatGaps, angleGaps, awarenessGaps };
+}
+
+function computeAngleDist(nichoFilter) {
+  const ads = getAllAds(nichoFilter);
+  const dist = {};
+  for (const ad of ads) {
+    if (!dist[ad.angulo]) dist[ad.angulo] = { total: 0, brands: new Set() };
+    dist[ad.angulo].total++;
+    dist[ad.angulo].brands.add(ad.brandName);
+  }
+  return Object.entries(dist).sort((a, b) => b[1].total - a[1].total);
+}
+
+// ===== HELPERS =====
+function escHtml(s) { return s ? String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') : '' }
+function showToast(msg, type) {
+  const t = document.createElement('div');
+  t.className = 'toast toast-' + (type || 'ok');
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
+function nicheColor(nicho) { return NICHE_CONFIG[nicho] ? NICHE_CONFIG[nicho].cor : '#666' }
+function nicheLabel(nicho) { return NICHE_CONFIG[nicho] ? NICHE_CONFIG[nicho].label : nicho }
+
+// ===== NAVIGATION =====
+const TAB_TITLES = {
+  overview:'Overview', brands:'Brands', catalog:'Ad Catalog', controls:'Controls',
+  coverage:'Coverage Map', gaps:'Gaps', angles:'Angles', 'spy-reports':'Spy Reports',
+  timeline:'Timeline', compare:'Compare', teardowns:'Teardowns',
+  'vsl-extract':'Extract VSL', config:'Config'
+};
+
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', () => {
+    const sec = item.dataset.section;
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    item.classList.add('active');
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    const el = document.getElementById('sec-' + sec);
+    if (el) el.classList.add('active');
+    document.getElementById('topbar-title').textContent = TAB_TITLES[sec] || sec;
+    renderTab(sec);
+    if (window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
+  });
+});
+
+document.getElementById('burger').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.toggle('open');
+});
+
+// ===== NICHE FILTER =====
+function renderNicheFilters() {
+  const c = document.getElementById('niche-filters');
+  let h = '<span class="pill pill-niche active" data-niche="all" onclick="setNiche(\'all\')">All</span>';
+  for (const [key, cfg] of Object.entries(NICHE_CONFIG)) {
+    h += `<span class="pill pill-niche" data-niche="${key}" onclick="setNiche('${key}')" style="--nc:${cfg.cor}">${cfg.label}</span>`;
+  }
+  c.innerHTML = h;
+}
+
+function setNiche(n) {
+  _nichoF = n;
+  document.querySelectorAll('[data-niche]').forEach(p => {
+    p.classList.toggle('active', p.dataset.niche === n);
+    if (p.dataset.niche !== 'all' && p.classList.contains('active')) {
+      const cor = NICHE_CONFIG[p.dataset.niche]?.cor || 'var(--accent)';
+      p.style.background = cor;
+      p.style.color = '#fff';
+      p.style.borderColor = cor;
+    } else if (p.dataset.niche !== 'all') {
+      p.style.background = '';
+      p.style.color = '';
+      p.style.borderColor = '';
+    } else if (p.classList.contains('active')) {
+      p.style.background = 'var(--accent)';
+      p.style.color = '#fff';
+    } else {
+      p.style.background = '';
+      p.style.color = '';
+    }
+  });
+  const activeTab = document.querySelector('.nav-item.active');
+  renderTab(activeTab ? activeTab.dataset.section : 'overview');
+}
+
+// ===== RENDER DISPATCHER =====
+function renderTab(tab) {
+  switch (tab) {
+    case 'overview': renderOverview(); break;
+    case 'brands': renderBrands(); break;
+    case 'catalog': renderCatalog(); break;
+    case 'controls': renderControls(); break;
+    case 'coverage': renderCoverage(); break;
+    case 'gaps': renderGaps(); break;
+    case 'angles': renderAngles(); break;
+    case 'timeline': renderTimeline(); break;
+    case 'compare': renderCompareSetup(); break;
+    case 'teardowns': renderTeardowns(); break;
+    case 'config': renderConfig(); break;
+  }
+  updateBadges();
+}
+
+function updateBadges() {
+  const brands = getFilteredBrands();
+  const ads = getAllAds(_nichoF);
+  const controls = computeControls(_nichoF);
+  const gaps = computeGaps(_nichoF);
+  document.getElementById('brands-badge').textContent = brands.length;
+  document.getElementById('catalog-badge').textContent = ads.length;
+  document.getElementById('controls-badge').textContent = controls.length;
+  document.getElementById('gaps-badge').textContent = gaps.formatGaps.length + gaps.angleGaps.length;
+}
+
+// ===== OVERVIEW =====
+function renderOverview() {
+  const brands = getFilteredBrands();
+  const ads = getAllAds(_nichoF);
+  const controls = computeControls(_nichoF);
+  const gaps = computeGaps(_nichoF);
+  const videoCount = ads.filter(a => a.formato === 'video').length;
+  const videoP = ads.length ? Math.round(videoCount / ads.length * 100) : 0;
+  const coveredAwareness = new Set(ads.map(a => a.awareness)).size;
+
+  const kpiData = [
+    { label: 'Brands', value: brands.length, sub: _nichoF === 'all' ? '4 niches' : nicheLabel(_nichoF), color: 'var(--accent)' },
+    { label: 'Ads Cataloged', value: ads.length, sub: `${videoCount} video, ${ads.length - videoCount} other`, color: 'var(--green)' },
+    { label: '% Video', value: videoP + '%', sub: 'of total ads', color: 'var(--purple)' },
+    { label: 'Controls', value: controls.length, sub: 'probable controls identified', color: 'var(--orange)' },
+    { label: 'Format Gaps', value: gaps.formatGaps.length, sub: `of ${ALL_FORMATS.length} known formats`, color: 'var(--red)' },
+    { label: 'Awareness Coverage', value: coveredAwareness + '/' + AWARENESS_LEVELS.length, sub: 'Schwartz levels covered', color: 'var(--cyan)' }
+  ];
+
+  document.getElementById('kpi-grid').innerHTML = kpiData.map(k =>
+    `<div class="kpi"><div class="kpi-label">${k.label}</div><div class="kpi-value" style="color:${k.color}">${k.value}</div><div class="kpi-sub">${k.sub}</div></div>`
+  ).join('');
+
+  const sorted = [...brands].sort((a, b) => b.totalAds - a.totalAds);
+  document.getElementById('overview-ranking').innerHTML = `<table style="width:100%;font-size:12px;border-collapse:collapse"><tbody>${sorted.map((b, i) =>
+    `<tr style="border-bottom:1px solid var(--border)"><td style="padding:8px 0;font-weight:600">${i + 1}. ${escHtml(b.name)}</td><td><span class="tag" style="background:${nicheColor(b.nicho)}22;color:${nicheColor(b.nicho)}">${nicheLabel(b.nicho)}</span></td><td style="text-align:right;font-family:'JetBrains Mono',monospace;color:var(--accent)">${b.totalAds}</td><td style="text-align:right;color:var(--text-3)">${b.videoPercent}% video</td></tr>`
+  ).join('')}</tbody></table>`;
+
+  const formatDist = {};
+  for (const ad of ads) formatDist[ad.formato] = (formatDist[ad.formato] || 0) + 1;
+  document.getElementById('overview-formats').innerHTML = Object.entries(formatDist)
+    .sort((a, b) => b[1] - a[1])
+    .map(([f, c]) => {
+      const pct = Math.round(c / ads.length * 100);
+      return `<div style="display:flex;align-items:center;gap:12px;margin:6px 0"><span style="width:80px;font-size:12px;font-weight:600;text-transform:capitalize">${f}</span><div style="flex:1;height:8px;background:var(--bg-4);border-radius:4px;overflow:hidden"><div style="width:${pct}%;height:100%;background:var(--accent);border-radius:4px"></div></div><span style="font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--text-2);width:60px;text-align:right">${c} (${pct}%)</span></div>`;
+    }).join('');
+}
+
+// ===== BRANDS =====
+function renderBrands() {
+  const brands = getFilteredBrands();
+  document.getElementById('brand-grid').innerHTML = brands.map(b => {
+    const adCount = (ADS_CATALOG[b.id] || []).length;
+    const controlAd = (ADS_CATALOG[b.id] || []).find(a => a.isControle);
+    return `<div class="brand-card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div><div class="brand-name">${escHtml(b.name)}</div>
+        <span class="brand-niche" style="background:${nicheColor(b.nicho)}22;color:${nicheColor(b.nicho)}">${nicheLabel(b.nicho)}</span></div>
+        <span style="font-size:24px;font-weight:800;font-family:'JetBrains Mono',monospace;color:var(--accent)">${b.totalAds}</span>
+      </div>
+      <div class="brand-meta">
+        <span>URL:</span> ${escHtml(b.url)}<br>
+        <span>Position:</span> ${escHtml(b.posicionamento.substring(0, 80))}${b.posicionamento.length > 80 ? '...' : ''}<br>
+        <span>Video:</span> ${b.videoPercent}% &bull; <span>Cataloged:</span> ${adCount} ads<br>
+        ${controlAd ? `<span>Control:</span> "${escHtml(controlAd.hookText.substring(0, 60))}..."` : '<span style="color:var(--yellow)">No control identified</span>'}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ===== CATALOG =====
+function renderCatalog() {
+  const fc = document.getElementById('catalog-filters');
+  if (!fc.innerHTML) {
+    fc.innerHTML = `
+      <input type="text" id="cat-search" placeholder="Search hooks, angles, brands..." oninput="renderCatalogTable()">
+      <select id="cat-format" onchange="renderCatalogTable()"><option value="">All Formats</option>${ALL_FORMATS.map(f => `<option value="${f}">${f}</option>`).join('')}</select>
+      <select id="cat-awareness" onchange="renderCatalogTable()"><option value="">All Awareness</option>${AWARENESS_LEVELS.map(l => `<option value="${l}">${l}</option>`).join('')}</select>
+    `;
+  }
+  renderCatalogTable();
+}
+
+function renderCatalogTable() {
+  let ads = getAllAds(_nichoF);
+  const search = (document.getElementById('cat-search')?.value || '').toLowerCase();
+  const formatF = document.getElementById('cat-format')?.value || '';
+  const awarenessF = document.getElementById('cat-awareness')?.value || '';
+
+  if (search) ads = ads.filter(a => (a.hookText + ' ' + a.angulo + ' ' + a.brandName).toLowerCase().includes(search));
+  if (formatF) ads = ads.filter(a => a.formato === formatF);
+  if (awarenessF) ads = ads.filter(a => a.awareness === awarenessF);
+
+  const formatTag = f => {
+    const cls = f === 'video' ? 'tag-video' : f === 'static' ? 'tag-static' : f === 'carousel' ? 'tag-carousel' : 'tag-ugc';
+    return `<span class="tag ${cls}">${f}</span>`;
+  };
+
+  document.getElementById('catalog-table').innerHTML = `<table>
+    <thead><tr><th>Brand</th><th>Hook</th><th>Format</th><th>Angle</th><th>Awareness</th><th>Vars</th><th>Control</th></tr></thead>
+    <tbody>${ads.map(a => `<tr>
+      <td style="font-weight:600;white-space:nowrap">${escHtml(a.brandName)}</td>
+      <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escHtml(a.hookText)}">${escHtml(a.hookText)}</td>
+      <td>${formatTag(a.formato)}</td>
+      <td style="font-size:11px">${escHtml(a.angulo)}</td>
+      <td><span class="tag" style="background:${AWARENESS_COLORS[a.awareness]}22;color:${AWARENESS_COLORS[a.awareness]}">${AWARENESS_SHORT[a.awareness]}</span></td>
+      <td style="font-family:'JetBrains Mono',monospace;text-align:center">${a.variacoes}</td>
+      <td>${a.isControle ? '<span style="color:var(--green);font-weight:700">&#10003;</span>' : ''}</td>
+    </tr>`).join('')}</tbody></table>`;
+}
+
+// ===== CONTROLS =====
+function renderControls() {
+  const controls = computeControls(_nichoF);
+  const maxVar = Math.max(...controls.map(c => c.variacoes), 1);
+
+  document.getElementById('controls-table').innerHTML = `<table>
+    <thead><tr><th>#</th><th>Brand</th><th>Hook (Control)</th><th>Format</th><th>Angle</th><th>Variations</th><th>Strength</th></tr></thead>
+    <tbody>${controls.map((c, i) => `<tr>
+      <td style="font-weight:700;color:var(--text-3)">${i + 1}</td>
+      <td style="font-weight:600">${escHtml(c.brandName)}</td>
+      <td style="max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escHtml(c.hookText)}">${escHtml(c.hookText)}</td>
+      <td><span class="tag tag-${c.formato === 'video' ? 'video' : c.formato === 'static' ? 'static' : 'carousel'}">${c.formato}</span></td>
+      <td style="font-size:11px">${escHtml(c.angulo)}</td>
+      <td style="font-family:'JetBrains Mono',monospace;text-align:center;font-weight:700;color:var(--green)">${c.variacoes}</td>
+      <td><div class="ctrl-rank"><div class="ctrl-bar"><div class="ctrl-bar-fill" style="width:${Math.round(c.variacoes / maxVar * 100)}%"></div></div></div></td>
+    </tr>`).join('')}</tbody></table>`;
+}
+
+// ===== COVERAGE =====
+function renderCoverage() {
+  const brands = getFilteredBrands();
+  const grid = document.getElementById('coverage-grid');
+  let html = '';
+
+  for (const brand of brands) {
+    const ads = ADS_CATALOG[brand.id] || [];
+    if (!ads.length) continue;
+
+    const angles = [...new Set(ads.map(a => a.angulo))];
+    const formats = [...new Set(ads.map(a => a.formato))];
+    const cov = computeCoverage(brand.id);
+    const awareDist = computeAwarenessDist(brand.id);
+    const totalAds = ads.length;
+
+    html += `<div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <h3 style="margin:0">${escHtml(brand.name)} <span style="font-size:11px;font-weight:400;color:var(--text-3)">(${totalAds} ads cataloged)</span></h3>
+        <span class="brand-niche" style="background:${nicheColor(brand.nicho)}22;color:${nicheColor(brand.nicho)};margin:0">${nicheLabel(brand.nicho)}</span>
+      </div>
+      <div class="coverage-table"><table>
+        <thead><tr><th style="width:180px">Angle</th>${formats.map(f => `<th style="text-align:center;text-transform:capitalize">${f}</th>`).join('')}<th style="text-align:center">Total</th></tr></thead>
+        <tbody>${angles.map(angle => {
+          let rowTotal = 0;
+          const cells = formats.map(f => {
+            const count = (cov[f] && cov[f][angle]) || 0;
+            rowTotal += count;
+            const cls = count >= 3 ? 'cov-high' : count >= 1 ? 'cov-med' : 'cov-zero';
+            return `<td style="text-align:center"><div class="coverage-cell ${cls}" style="display:inline-flex">${count}</div></td>`;
+          }).join('');
+          return `<tr><td style="font-size:11px">${escHtml(angle)}</td>${cells}<td style="text-align:center;font-weight:700;font-family:'JetBrains Mono',monospace">${rowTotal}</td></tr>`;
+        }).join('')}</tbody>
+      </table></div>
+      <div style="margin-top:12px">
+        <div style="font-size:11px;font-weight:600;color:var(--text-3);margin-bottom:6px">Awareness Distribution</div>
+        <div class="awareness-bar">${AWARENESS_LEVELS.map(l => {
+          const count = awareDist[l] || 0;
+          const pct = totalAds ? Math.max(count / totalAds * 100, count > 0 ? 8 : 0) : 0;
+          return pct > 0 ? `<div style="width:${pct}%;background:${AWARENESS_COLORS[l]}" title="${l}: ${count}">${AWARENESS_SHORT[l]}</div>` : '';
+        }).join('')}</div>
+      </div>
+    </div>`;
+  }
+
+  grid.innerHTML = html || '<div class="empty-state"><p>No brands in this niche filter.</p></div>';
+}
+
+// ===== GAPS =====
+function renderGaps() {
+  const gaps = computeGaps(_nichoF);
+  const brands = getFilteredBrands();
+
+  document.getElementById('format-gaps').innerHTML = gaps.formatGaps.length
+    ? gaps.formatGaps.map(f => `<li class="gap-item"><div class="gap-icon" style="background:var(--red-bg);color:var(--red)">&#9888;</div><div class="gap-text"><div class="gap-title" style="text-transform:capitalize">${f}</div><div class="gap-desc">No brand uses this format. ${brands.length} brands could test it.</div></div><div class="gap-score" style="color:var(--red)">${brands.length}</div></li>`).join('')
+    : '<li class="gap-item"><div class="gap-text"><div class="gap-desc" style="color:var(--green)">All known formats are covered.</div></div></li>';
+
+  const ads = getAllAds(_nichoF);
+  const angleCount = {};
+  for (const ad of ads) angleCount[ad.angulo] = (angleCount[ad.angulo] || 0) + 1;
+  const lowAngles = ALL_ANGLES.filter(a => !angleCount[a] || angleCount[a] < 2).slice(0, 15);
+
+  document.getElementById('angle-gaps').innerHTML = lowAngles.length
+    ? lowAngles.map(a => {
+        const count = angleCount[a] || 0;
+        return `<li class="gap-item"><div class="gap-icon" style="background:${count === 0 ? 'var(--red-bg)' : 'var(--yellow-bg)'};color:${count === 0 ? 'var(--red)' : 'var(--yellow)'}">&#9670;</div><div class="gap-text"><div class="gap-title">${escHtml(a)}</div><div class="gap-desc">${count === 0 ? 'Not used by any brand' : `Only ${count} ad(s) use this angle`}</div></div><div class="gap-score" style="color:${count === 0 ? 'var(--red)' : 'var(--yellow)'}">${count}</div></li>`;
+      }).join('')
+    : '<li class="gap-item"><div class="gap-text"><div class="gap-desc" style="color:var(--green)">Good angle coverage.</div></div></li>';
+
+  document.getElementById('awareness-gaps').innerHTML = gaps.awarenessGaps.length
+    ? gaps.awarenessGaps.map(l => `<li class="gap-item"><div class="gap-icon" style="background:${AWARENESS_COLORS[l]}22;color:${AWARENESS_COLORS[l]}">&#9678;</div><div class="gap-text"><div class="gap-title">${l}</div><div class="gap-desc">No ads target this awareness level. Major opportunity.</div></div><div class="gap-score" style="color:var(--red)">0</div></li>`).join('')
+    : '<li class="gap-item"><div class="gap-text"><div class="gap-desc" style="color:var(--green)">All 5 Schwartz awareness levels covered.</div></div></li>';
+}
+
+// ===== ANGLES =====
+function renderAngles() {
+  const dist = computeAngleDist(_nichoF);
+  const maxCount = dist.length ? dist[0][1].total : 1;
+
+  document.getElementById('angles-table').innerHTML = `<table>
+    <thead><tr><th>#</th><th>Angle</th><th>Ads</th><th>Brands</th><th>Distribution</th></tr></thead>
+    <tbody>${dist.map(([angle, data], i) => `<tr>
+      <td style="color:var(--text-3);font-weight:700">${i + 1}</td>
+      <td style="font-weight:600">${escHtml(angle)}</td>
+      <td style="font-family:'JetBrains Mono',monospace;text-align:center">${data.total}</td>
+      <td style="font-size:11px;color:var(--text-2)">${[...data.brands].join(', ')}</td>
+      <td><div style="height:8px;background:var(--bg-4);border-radius:4px;overflow:hidden;min-width:100px"><div style="width:${Math.round(data.total / maxCount * 100)}%;height:100%;background:var(--accent);border-radius:4px"></div></div></td>
+    </tr>`).join('')}</tbody></table>`;
+}
+
+// ===== TIMELINE =====
+function renderTimeline() {
+  const ads = getAllAds(_nichoF);
+  const sorted = [...ads].sort((a, b) => {
+    const da = new Date(a.dataInicio), db = new Date(b.dataInicio);
+    return db - da;
+  });
+
+  document.getElementById('timeline-table').innerHTML = `<table>
+    <thead><tr><th>Date</th><th>Brand</th><th>Hook</th><th>Format</th><th>Angle</th></tr></thead>
+    <tbody>${sorted.map(a => `<tr>
+      <td style="font-family:'JetBrains Mono',monospace;white-space:nowrap;font-size:11px">${a.dataInicio}</td>
+      <td style="font-weight:600">${escHtml(a.brandName)}</td>
+      <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escHtml(a.hookText)}</td>
+      <td><span class="tag tag-${a.formato === 'video' ? 'video' : a.formato === 'static' ? 'static' : 'carousel'}">${a.formato}</span></td>
+      <td style="font-size:11px">${escHtml(a.angulo)}</td>
+    </tr>`).join('')}</tbody></table>`;
+}
+
+// ===== COMPARE =====
+function renderCompareSetup() {
+  const brands = getFilteredBrands();
+  const selA = document.getElementById('compare-a');
+  const selB = document.getElementById('compare-b');
+  if (selA.options.length <= 1) {
+    selA.innerHTML = brands.map(b => `<option value="${b.id}">${b.name}</option>`).join('');
+    selB.innerHTML = brands.map(b => `<option value="${b.id}">${b.name}</option>`).join('');
+    if (brands.length > 1) selB.selectedIndex = 1;
+  }
+}
+
+function renderCompare() {
+  const aId = document.getElementById('compare-a').value;
+  const bId = document.getElementById('compare-b').value;
+  const brandA = BRANDS.find(b => b.id === aId);
+  const brandB = BRANDS.find(b => b.id === bId);
+  if (!brandA || !brandB) return;
+
+  const adsA = ADS_CATALOG[aId] || [];
+  const adsB = ADS_CATALOG[bId] || [];
+  const distA = computeAwarenessDist(aId);
+  const distB = computeAwarenessDist(bId);
+
+  function brandCard(brand, ads, dist) {
+    const videoP = ads.length ? Math.round(ads.filter(a => a.formato === 'video').length / ads.length * 100) : 0;
+    const controls = ads.filter(a => a.isControle);
+    const angles = [...new Set(ads.map(a => a.angulo))];
+    return `<div class="card">
+      <h3>${escHtml(brand.name)}</h3>
+      <div style="font-size:12px;color:var(--text-2);line-height:1.8">
+        Total Ads: <strong>${brand.totalAds}</strong><br>
+        Cataloged: <strong>${ads.length}</strong><br>
+        Video: <strong>${videoP}%</strong><br>
+        Controls: <strong>${controls.length}</strong><br>
+        Unique Angles: <strong>${angles.length}</strong><br>
+      </div>
+      <div style="margin-top:12px"><div style="font-size:11px;font-weight:600;color:var(--text-3);margin-bottom:4px">Awareness</div>
+        <div class="awareness-bar">${AWARENESS_LEVELS.map(l => {
+          const count = dist[l] || 0;
+          const pct = ads.length ? Math.max(count / ads.length * 100, count > 0 ? 12 : 0) : 0;
+          return pct > 0 ? `<div style="width:${pct}%;background:${AWARENESS_COLORS[l]}" title="${l}: ${count}">${AWARENESS_SHORT[l]}</div>` : '';
+        }).join('')}</div>
+      </div>
+    </div>`;
+  }
+
+  document.getElementById('compare-grid').innerHTML =
+    `<div class="compare-col">${brandCard(brandA, adsA, distA)}</div>` +
+    `<div class="compare-col">${brandCard(brandB, adsB, distB)}</div>`;
+}
+
+// ===== TEARDOWNS =====
+function renderTeardowns() {
+  const brands = getFilteredBrands();
+  document.getElementById('teardowns-table').innerHTML = `<table>
+    <thead><tr><th>Brand</th><th>Niche</th><th>Ads</th><th>Status</th><th>Link</th></tr></thead>
+    <tbody>${brands.map(b => `<tr>
+      <td style="font-weight:600">${escHtml(b.name)}</td>
+      <td><span class="brand-niche" style="background:${nicheColor(b.nicho)}22;color:${nicheColor(b.nicho)};margin:0">${nicheLabel(b.nicho)}</span></td>
+      <td style="font-family:'JetBrains Mono',monospace">${b.totalAds}</td>
+      <td><span class="tag" style="background:var(--yellow-bg);color:var(--yellow)">pending</span></td>
+      <td style="font-size:11px;color:var(--text-3)">wiki/creative-strategist/dissecacoes/${b.id}.md</td>
+    </tr>`).join('')}</tbody></table>`;
+}
+
+// ===== CONFIG =====
+function renderConfig() {
+  const c = document.getElementById('config-keywords');
+  c.innerHTML = Object.entries(NICHE_CONFIG).map(([key, cfg]) =>
+    `<div style="margin-bottom:16px"><div style="font-size:12px;font-weight:600;color:${cfg.cor};margin-bottom:4px">${cfg.label}</div><div style="font-size:11px;color:var(--text-2);line-height:1.6">${cfg.keywords.join(', ')}</div></div>`
+  ).join('');
+}
+
+function saveSbConfig() {
+  const url = document.getElementById('cfg-sb-url').value.trim();
+  const key = document.getElementById('cfg-sb-key').value.trim();
+  if (url && key) {
+    localStorage.setItem('spy-cs-sb-url', url);
+    localStorage.setItem('spy-cs-sb-key', key);
+    showToast('Supabase config saved');
+  } else {
+    showToast('Fill both fields', 'info');
+  }
+}
+
+// ===== VSL EXTRACTOR =====
+function extractVturb() {
+  const url = document.getElementById('vturb-url').value.trim();
+  if (!url) { showToast('Paste a Vturb URL', 'info'); return; }
+
+  const result = document.getElementById('vturb-result');
+  result.innerHTML = '<div style="color:var(--text-3);font-size:12px">Extracting... (paste the player.js URL directly)</div>';
+
+  const match = url.match(/scripts\.converteai\.net\/([a-f0-9-]+)\/(players|ab-test)\/([a-f0-9-]+)/);
+  if (!match) {
+    result.innerHTML = '<div style="color:var(--red);font-size:12px">Could not parse Vturb URL. Expected format: https://scripts.converteai.net/{accountId}/players/{playerId}/player.js</div>';
+    return;
+  }
+
+  const [, accountId, type, playerId] = match;
+  result.innerHTML = `<div class="card" style="margin-top:0">
+    <div style="font-size:12px;color:var(--text-2);line-height:1.8">
+      <strong>Account:</strong> ${accountId}<br>
+      <strong>Player:</strong> ${playerId}<br>
+      <strong>Type:</strong> ${type}<br>
+      <strong>Script URL:</strong> <code style="font-size:11px;color:var(--accent);word-break:break-all">${escHtml(url)}</code><br><br>
+      <strong>To get HLS stream:</strong><br>
+      <code style="font-size:11px;color:var(--green);background:var(--bg-3);padding:4px 8px;border-radius:4px;display:block;margin:4px 0">curl -s "${escHtml(url)}" | grep -oE '"id":"[^"]*"' </code>
+      Then construct: <code style="font-size:11px;color:var(--green)">https://cdn.converteai.net/${accountId}/{videoId}/main.m3u8</code>
+    </div>
+  </div>`;
+}
+
+// ===== INIT =====
+renderNicheFilters();
+renderOverview();
+
+(function() {
+  try {
+    const sbUrl = localStorage.getItem('spy-cs-sb-url');
+    const sbKey = localStorage.getItem('spy-cs-sb-key');
+    if (sbUrl) document.getElementById('cfg-sb-url').value = sbUrl;
+    if (sbKey) document.getElementById('cfg-sb-key').value = sbKey;
+  } catch(e) {}
+})();
+</script>
+</body>
+</html>
