@@ -101,6 +101,32 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg-0);color:var(-
 .kw-chip{display:inline-block;padding:4px 12px;background:var(--bg-3);border:1px solid var(--border);border-radius:16px;color:var(--text-2);font-size:11px;cursor:pointer;font-family:inherit;transition:all .15s;text-decoration:none}
 .kw-chip:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-bg)}
 
+.insight{display:flex;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border)}
+.insight:last-child{border-bottom:none}
+.insight-tag{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;padding-top:2px}
+.insight-text{font-size:12px;color:var(--text-2);line-height:1.6}
+.insight-text strong{color:var(--text-1)}
+
+.disc-form{display:none;background:var(--bg-3);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px}
+.disc-form label{font-size:11px;font-weight:600;color:var(--text-3);display:block;margin-bottom:4px;margin-top:12px}
+.disc-form label:first-child{margin-top:0}
+.disc-form input,.disc-form textarea{width:100%;background:var(--bg-2);border:1px solid var(--border);color:var(--text-1);padding:8px 12px;border-radius:6px;font-size:12px;font-family:inherit}
+.disc-form textarea{resize:vertical;min-height:60px}
+
+.kw-lang-tabs{display:flex;gap:4px;margin-bottom:12px}
+.kw-lang-btn{padding:5px 14px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--bg-3);color:var(--text-2);font-family:inherit;transition:all .15s}
+.kw-lang-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+.chart-wrap{position:relative;padding:10px 0}
+
+.ad-actions{position:relative;display:inline-block}
+.ad-actions-btn{background:var(--bg-3);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer;color:var(--text-2);font-family:inherit}
+.ad-actions-btn:hover{border-color:var(--accent);color:var(--accent)}
+.ad-actions-menu{display:none;position:absolute;right:0;top:100%;margin-top:4px;background:var(--bg-2);border:1px solid var(--border);border-radius:8px;padding:4px;z-index:100;min-width:160px;box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.ad-actions-menu.open{display:block}
+.ad-actions-menu a,.ad-actions-menu button{display:block;width:100%;text-align:left;padding:6px 12px;font-size:11px;border:none;background:none;color:var(--text-2);cursor:pointer;border-radius:4px;text-decoration:none;font-family:inherit}
+.ad-actions-menu a:hover,.ad-actions-menu button:hover{background:var(--bg-hover);color:var(--text-1)}
+
 .content{padding:24px}
 .section{display:none}
 .section.active{display:block}
@@ -217,6 +243,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg-0);color:var(-
       <div class="nav-section">Tools</div>
       <div class="nav-item" data-section="vsl-extract"><span class="icon">&#127909;</span>Extract VSL</div>
       <div class="nav-item" data-section="config"><span class="icon">&#9881;</span>Config</div>
+      <div class="nav-item" data-section="discovery"><span class="icon">&#128301;</span>Discovery<span class="nav-badge" id="discovery-badge">0</span></div>
     </nav>
     <div class="sidebar-footer">
       v1.0 &bull; Operator: Tiago Felipe<br>
@@ -236,8 +263,13 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg-0);color:var(-
     <div class="content">
       <div class="section active" id="sec-overview">
         <div class="kpi-grid" id="kpi-grid"></div>
+        <div class="card" id="insights-card"><h3>Insights</h3><div id="insights-banner"></div></div>
         <div class="card"><h3>Top Brands by Ad Volume</h3><div id="overview-ranking"></div></div>
         <div class="card"><h3>Format Distribution</h3><div id="overview-formats"></div></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div class="card"><h3>Ads by Format</h3><div class="chart-wrap"><canvas id="chart-formats"></canvas></div></div>
+          <div class="card"><h3>Top Angles</h3><div class="chart-wrap"><canvas id="chart-angles"></canvas></div></div>
+        </div>
       </div>
 
       <div class="section" id="sec-brands"><div class="brand-grid" id="brand-grid"></div></div>
@@ -316,14 +348,47 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg-0);color:var(-
           </div>
         </div>
         <div class="card">
-          <h3>Niche Keywords</h3>
-          <p style="font-size:12px;color:var(--text-3);margin-bottom:12px">Click any keyword to search the Meta Ad Library. Or type your own below.</p>
+          <h3>Niche Keywords DB</h3>
+          <p style="font-size:12px;color:var(--text-3);margin-bottom:12px">Keywords by language. Click any to search Meta Ad Library (US market).</p>
+          <div class="kw-lang-tabs" id="kw-lang-tabs">
+            <button class="kw-lang-btn active" onclick="switchKwLang('en')">EN</button>
+            <button class="kw-lang-btn" onclick="switchKwLang('pt')">PT</button>
+            <button class="kw-lang-btn" onclick="switchKwLang('es')">ES</button>
+          </div>
           <div style="display:flex;gap:8px;margin-bottom:16px">
             <input id="kw-search-input" type="text" placeholder="Type or click a keyword..." style="flex:1;padding:8px 12px;background:var(--bg-3);border:1px solid var(--border);border-radius:8px;color:var(--text-1);font-size:13px;font-family:inherit">
             <button onclick="buscarKwAdLib()" style="padding:8px 18px;background:var(--accent);border:none;border-radius:8px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap">Search Ad Library</button>
           </div>
           <div id="config-keywords"></div>
         </div>
+      </div>
+
+      <div class="section" id="sec-discovery">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <p style="font-size:12px;color:var(--text-3);margin:0;line-height:1.5">Discover and track new brands. Entries persist in your browser via localStorage.</p>
+          <button class="pill pill-live" onclick="toggleDiscForm()" id="disc-toggle-btn" style="padding:8px 16px;font-size:12px">+ Add Brand</button>
+        </div>
+        <div class="disc-form" id="disc-form">
+          <label>Brand Name *</label>
+          <input type="text" id="disc-name" placeholder="e.g. Ritual">
+          <label>Website</label>
+          <input type="text" id="disc-url" placeholder="e.g. ritual.com">
+          <label>Niche</label>
+          <select id="disc-niche" style="background:var(--bg-2);border:1px solid var(--border);color:var(--text-1);padding:8px 12px;border-radius:6px;font-size:12px;font-family:inherit;width:100%">
+            <option value="health">Health & Wellness</option>
+            <option value="skincare">Skin Care</option>
+            <option value="cookware">Cookware</option>
+            <option value="apparel">Apparel</option>
+            <option value="accessories">Accessories/Jewelry</option>
+          </select>
+          <label>Notes</label>
+          <textarea id="disc-notes" placeholder="Positioning, ad count, why tracking..."></textarea>
+          <div style="margin-top:16px;display:flex;gap:8px">
+            <button class="pill pill-live" onclick="salvarDiscovery()" style="padding:8px 20px;font-size:12px">Save</button>
+            <button class="pill pill-niche" onclick="toggleDiscForm()" style="padding:8px 20px;font-size:12px">Cancel</button>
+          </div>
+        </div>
+        <div class="table-card" id="disc-table"></div>
       </div>
     </div>
   </div>
@@ -338,6 +403,36 @@ const NICHE_CONFIG = {
   apparel:     { label: 'Apparel',            cor: '#3b82f6', keywords: ['clothing','dress','fashion','activewear','sustainable fashion','basics','loungewear','denim','athleisure','everyday wear','perfect fit','cashmere','linen','factory direct'] },
   accessories: { label: 'Accessories/Jewelry',cor: '#f59e0b', keywords: ['jewelry','earrings','necklace','ring','bracelet','gold plated','fine jewelry','watch','accessories','pendant','layering jewelry','sustainable jewelry','gold vermeil'] }
 };
+
+// ===== NICHE KEYWORDS (multilang) =====
+const NICHE_KW_LANG = {
+  health: {
+    en: ['probiotics','gut health supplement','GLP-1 supplement','metabolism booster','weight loss supplement','appetite suppressant','magnesium supplement','sleep supplement','energy supplement','insulin resistance','berberine','organ supplements','cortisol supplement'],
+    pt: ['probioticos','saude intestinal','suplemento GLP-1','acelerador metabolismo','suplemento emagrecimento','supressor apetite','suplemento magnesio','suplemento sono','suplemento energia','resistencia insulina','berberina','suplemento orgaos','cortisol suplemento'],
+    es: ['probioticos','salud intestinal','suplemento GLP-1','acelerador metabolismo','suplemento adelgazar','supresor apetito','suplemento magnesio','suplemento sueño','suplemento energia','resistencia insulina','berberina','suplemento organos','cortisol suplemento']
+  },
+  skincare: {
+    en: ['colostrum supplement','collagen supplement','retinol serum','vitamin C serum','anti-aging supplement','hair growth supplement','beauty supplement','moisturizer','sunscreen','dark spots','hyaluronic acid'],
+    pt: ['suplemento colostro','suplemento colageno','serum retinol','serum vitamina C','suplemento anti-idade','suplemento crescimento capilar','suplemento beleza','hidratante','protetor solar','manchas escuras','acido hialuronico'],
+    es: ['suplemento calostro','suplemento colageno','serum retinol','serum vitamina C','suplemento anti-edad','suplemento crecimiento capilar','suplemento belleza','hidratante','protector solar','manchas oscuras','acido hialuronico']
+  },
+  cookware: {
+    en: ['titanium cookware','non-stick pan','PFAS free cookware','ceramic cookware','cookware set','non-toxic cookware','cast iron alternative','dishwasher safe pan'],
+    pt: ['panela titanio','panela antiaderente','panela livre PFAS','panela ceramica','jogo de panelas','panela atoxica','alternativa ferro fundido','panela lava-loucas'],
+    es: ['sarten titanio','sarten antiadherente','sarten libre PFAS','sarten ceramica','juego de ollas','sarten no toxica','alternativa hierro fundido','sarten lavavajillas']
+  },
+  apparel: {
+    en: ['activewear','sustainable fashion','basics clothing','loungewear','athleisure','perfect fit tee','cashmere sweater','linen clothing'],
+    pt: ['moda esportiva','moda sustentavel','roupas basicas','loungewear','athleisure','camiseta caimento perfeito','sueter caxemira','roupa linho'],
+    es: ['ropa deportiva','moda sostenible','ropa basica','loungewear','athleisure','camiseta corte perfecto','sueter cachemira','ropa lino']
+  },
+  accessories: {
+    en: ['fine jewelry','earrings gold','layering necklace','bracelet gold','gold vermeil jewelry','sustainable jewelry','everyday jewelry','engagement ring'],
+    pt: ['joias finas','brincos ouro','colar sobreposicao','pulseira ouro','joias gold vermeil','joias sustentaveis','joias uso diario','anel noivado'],
+    es: ['joyeria fina','aretes oro','collar capas','pulsera oro','joyeria gold vermeil','joyeria sostenible','joyeria uso diario','anillo compromiso']
+  }
+};
+let _kwLang = 'en';
 
 // ===== BRANDS =====
 const BRANDS = [
@@ -457,6 +552,28 @@ const AWARENESS_SHORT = {unaware:'UN','problem-aware':'PR','solution-aware':'SO'
 const ALL_FORMATS = ['video','static','carousel','ugc','advertorial','listicle'];
 const ALL_ANGLES = ['testimonial-transformation','science-authority','ingredient-education','comparison','creator-endorsement','routine-integration','ingredient-stack','ugc-reaction','quiz-funnel','doctor-authority','before-after','social-proof','problem-agitation','attack-competitor','luxury-ritual','price-disruption','routine-builder','product-hero','lifestyle','fit-transformation','ugc-couple','transparency','self-purchase','gifting','styling','sustainability','price-value','product-feature'];
 
+// ===== AUTO-DISCOVERY =====
+const DISC_KEY = 'spy_cs_discovery';
+const SEED_DISCOVERY = [
+  { id:'disc-ritual', name:'Ritual', url:'ritual.com', nicho:'health', notes:'Traceable vitamins. "Made Traceable". Subscription-first. Essential for Women hero.', added:'seed' },
+  { id:'disc-nutrafol', name:'Nutrafol', url:'nutrafol.com', nicho:'skincare', notes:'Hair growth supplement. Dermatologist recommended. Before/after focused.', added:'seed' },
+  { id:'disc-skims', name:'SKIMS', url:'skims.com', nicho:'apparel', notes:'Kim K shapewear/basics. Inclusive sizing. Massive scale.', added:'seed' },
+  { id:'disc-missoma', name:'Missoma', url:'missoma.com', nicho:'accessories', notes:'UK demi-fine jewelry. Layering focus. Celebrity collabs.', added:'seed' },
+  { id:'disc-madeincookware', name:'Made In Cookware', url:'madeincookware.com', nicho:'cookware', notes:'Pro-grade cookware. Chef partnerships. American-made positioning.', added:'seed' }
+];
+let _discoveryData = [];
+
+function loadDiscoveryData() {
+  try {
+    const stored = JSON.parse(localStorage.getItem(DISC_KEY) || '[]');
+    const seedIds = new Set(stored.map(d => d.id));
+    _discoveryData = [...SEED_DISCOVERY.filter(s => !seedIds.has(s.id)), ...stored];
+  } catch(e) { _discoveryData = [...SEED_DISCOVERY]; }
+}
+function saveDiscoveryData() {
+  try { localStorage.setItem(DISC_KEY, JSON.stringify(_discoveryData)); } catch(e) {}
+}
+
 // ===== STATE =====
 let _nichoF = 'all';
 let _sortCol = null;
@@ -543,7 +660,7 @@ const TAB_TITLES = {
   overview:'Overview', brands:'Brands', catalog:'Ad Catalog', controls:'Controls',
   coverage:'Coverage Map', gaps:'Gaps', angles:'Angles', 'spy-reports':'Spy Reports',
   timeline:'Timeline', compare:'Compare', teardowns:'Teardowns',
-  'vsl-extract':'Extract VSL', config:'Config'
+  'vsl-extract':'Extract VSL', config:'Config', discovery:'Discovery'
 };
 
 document.querySelectorAll('.nav-item').forEach(item => {
@@ -613,6 +730,7 @@ function renderTab(tab) {
     case 'compare': renderCompareSetup(); break;
     case 'teardowns': renderTeardowns(); break;
     case 'config': renderConfig(); break;
+    case 'discovery': renderDiscovery(); break;
   }
   updateBadges();
 }
@@ -626,6 +744,7 @@ function updateBadges() {
   document.getElementById('catalog-badge').textContent = ads.length;
   document.getElementById('controls-badge').textContent = controls.length;
   document.getElementById('gaps-badge').textContent = gaps.formatGaps.length + gaps.angleGaps.length;
+  document.getElementById('discovery-badge').textContent = _discoveryData.length;
 }
 
 // ===== OVERVIEW =====
@@ -664,6 +783,9 @@ function renderOverview() {
       const pct = Math.round(c / ads.length * 100);
       return `<div style="display:flex;align-items:center;gap:12px;margin:6px 0"><span style="width:80px;font-size:12px;font-weight:600;text-transform:capitalize">${f}</span><div style="flex:1;height:8px;background:var(--bg-4);border-radius:4px;overflow:hidden"><div style="width:${pct}%;height:100%;background:var(--accent);border-radius:4px"></div></div><span style="font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--text-2);width:60px;text-align:right">${c} (${pct}%)</span></div>`;
     }).join('');
+
+  renderInsights(brands, ads, controls, gaps);
+  setTimeout(function() { renderCharts(ads); }, 50);
 }
 
 // ===== BRANDS =====
@@ -717,15 +839,20 @@ function renderCatalogTable() {
   };
 
   document.getElementById('catalog-table').innerHTML = `<table>
-    <thead><tr><th>Brand</th><th>Hook</th><th>Format</th><th>Angle</th><th>Awareness</th><th>Vars</th><th>Control</th></tr></thead>
+    <thead><tr><th>Brand</th><th>Hook</th><th>Format</th><th>Angle</th><th>Awareness</th><th>Vars</th><th>Control</th><th></th></tr></thead>
     <tbody>${ads.map(a => `<tr>
       <td style="font-weight:600;white-space:nowrap">${escHtml(a.brandName)}</td>
-      <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escHtml(a.hookText)}">${escHtml(a.hookText)}</td>
+      <td style="max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer" title="${escHtml(a.hookText)}" onclick="openVideoModal('','','${escHtml(a.hookText).replace(/'/g,"\\'")}')"><span style="color:var(--accent);margin-right:4px">&#9654;</span>${escHtml(a.hookText)}</td>
       <td>${formatTag(a.formato)}</td>
       <td style="font-size:11px">${escHtml(a.angulo)}</td>
       <td><span class="tag" style="background:${AWARENESS_COLORS[a.awareness]}22;color:${AWARENESS_COLORS[a.awareness]}">${AWARENESS_SHORT[a.awareness]}</span></td>
       <td style="font-family:'JetBrains Mono',monospace;text-align:center">${a.variacoes}</td>
       <td>${a.isControle ? '<span style="color:var(--green);font-weight:700">&#10003;</span>' : ''}</td>
+      <td><div class="ad-actions"><button class="ad-actions-btn" onclick="toggleAdMenu(this)">...</button><div class="ad-actions-menu">
+        ${a.link ? `<a href="${escHtml(a.link)}" target="_blank">View in Ad Library</a>` : `<a href="https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=US&search_type=keyword_unordered&q=${encodeURIComponent(a.hookText.substring(0,40))}" target="_blank">Search Ad Library</a>`}
+        <button onclick="navigator.clipboard.writeText('${escHtml(a.hookText).replace(/'/g,"\\'")}');showToast('Hook copied');toggleAdMenu(this.closest('.ad-actions').querySelector('.ad-actions-btn'))">Copy Hook</button>
+        <button onclick="navigator.clipboard.writeText('Brand: ${escHtml(a.brandName)}\\nHook: ${escHtml(a.hookText).replace(/'/g,"\\'")}\\nFormat: ${a.formato}\\nAngle: ${a.angulo}\\nAwareness: ${a.awareness}\\nVariations: ${a.variacoes}');showToast('Ad data copied');toggleAdMenu(this.closest('.ad-actions').querySelector('.ad-actions-btn'))">Copy All Data</button>
+      </div></div></td>
     </tr>`).join('')}</tbody></table>`;
 }
 
@@ -924,12 +1051,23 @@ function renderTeardowns() {
 
 // ===== CONFIG =====
 function renderConfig() {
+  renderKwByLang(_kwLang);
+}
+function renderKwByLang(lang) {
   const c = document.getElementById('config-keywords');
-  c.innerHTML = Object.entries(NICHE_CONFIG).map(([key, cfg]) =>
-    `<div style="margin-bottom:16px"><div style="font-size:12px;font-weight:600;color:${cfg.cor};margin-bottom:6px">${cfg.label} <span style="font-weight:400;color:var(--text-3)">(${cfg.keywords.length})</span></div><div style="display:flex;flex-wrap:wrap;gap:6px">${cfg.keywords.map(kw =>
+  c.innerHTML = Object.entries(NICHE_CONFIG).map(([key, cfg]) => {
+    const kws = (NICHE_KW_LANG[key] && NICHE_KW_LANG[key][lang]) || cfg.keywords;
+    return `<div style="margin-bottom:16px"><div style="font-size:12px;font-weight:600;color:${cfg.cor};margin-bottom:6px">${cfg.label} <span style="font-weight:400;color:var(--text-3)">(${kws.length})</span></div><div style="display:flex;flex-wrap:wrap;gap:6px">${kws.map(kw =>
       `<button class="kw-chip" onclick="clickKw('${kw.replace(/'/g,"\\'")}');" style="border-color:${cfg.cor}22">${escHtml(kw)}</button>`
-    ).join('')}</div></div>`
-  ).join('');
+    ).join('')}</div></div>`;
+  }).join('');
+}
+function switchKwLang(lang) {
+  _kwLang = lang;
+  document.querySelectorAll('#kw-lang-tabs .kw-lang-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent.toLowerCase() === lang);
+  });
+  renderKwByLang(lang);
 }
 function clickKw(kw) {
   document.getElementById('kw-search-input').value = kw;
@@ -981,7 +1119,248 @@ function extractVturb() {
   </div>`;
 }
 
+// ===== INSIGHTS BANNER =====
+function renderInsights(brands, ads, controls, gaps) {
+  const insights = [];
+  if (brands.length) {
+    const topBrand = [...brands].sort((a,b) => b.totalAds - a.totalAds)[0];
+    insights.push({ tag:'VOLUME', color:'var(--accent)', text:`<strong>${escHtml(topBrand.name)}</strong> leads with <strong>${topBrand.totalAds} ads</strong>. Heavy testing signals high spend and data-driven iteration.` });
+  }
+  const recentAds = ads.filter(a => { const d = new Date(a.dataInicio); const now = new Date(); return (now - d) / 86400000 < 60; });
+  if (recentAds.length) {
+    const recentBrands = [...new Set(recentAds.map(a => a.brandName))];
+    insights.push({ tag:'RECENT', color:'var(--green)', text:`<strong>${recentAds.length} ads</strong> launched in the last 60 days across <strong>${recentBrands.length} brands</strong>: ${recentBrands.slice(0,3).map(b => `<strong>${escHtml(b)}</strong>`).join(', ')}${recentBrands.length > 3 ? '...' : ''}.` });
+  }
+  if (gaps.formatGaps.length) {
+    insights.push({ tag:'GAP', color:'var(--orange)', text:`<strong>${gaps.formatGaps.length} formats</strong> not used by any brand: ${gaps.formatGaps.map(f => `<strong>${f}</strong>`).join(', ')}. Whitespace opportunity.` });
+  }
+  const videoP = ads.length ? Math.round(ads.filter(a => a.formato === 'video').length / ads.length * 100) : 0;
+  if (videoP > 50) {
+    insights.push({ tag:'PATTERN', color:'var(--purple)', text:`<strong>${videoP}%</strong> of all ads are video. Video-first creative strategy dominates this space.` });
+  }
+  if (controls.length) {
+    const topCtrl = controls[0];
+    insights.push({ tag:'CONTROL', color:'var(--cyan)', text:`Strongest control: <strong>${escHtml(topCtrl.brandName)}</strong> with <strong>${topCtrl.variacoes} variations</strong>. "${escHtml(topCtrl.hookText.substring(0,50))}..."` });
+  }
+  document.getElementById('insights-banner').innerHTML = insights.length
+    ? insights.map(i => `<div class="insight"><div class="insight-tag" style="color:${i.color}">${i.tag}</div><div class="insight-text">${i.text}</div></div>`).join('')
+    : '<div class="insight"><div class="insight-text" style="color:var(--text-3)">No insights to show. Add more data.</div></div>';
+}
+
+// ===== CHARTS (Canvas) =====
+function drawBar(id, labels, data, colors, maxVal) {
+  const canvas = document.getElementById(id);
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const W = canvas.parentElement.clientWidth - 20;
+  canvas.style.width = W + 'px';
+  canvas.style.height = '220px';
+  canvas.width = W * dpr;
+  canvas.height = 220 * dpr;
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0, 0, W, 220);
+
+  const pad = { t: 20, r: 10, b: 50, l: 40 };
+  const chartW = W - pad.l - pad.r;
+  const chartH = 220 - pad.t - pad.b;
+  const barW = Math.min(40, (chartW / labels.length) - 8);
+  const gap = (chartW - barW * labels.length) / (labels.length + 1);
+
+  const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text-3').trim() || '#888';
+  const gridColor = getComputedStyle(document.documentElement).getPropertyValue('--border').trim() || '#333';
+
+  ctx.strokeStyle = gridColor;
+  ctx.lineWidth = 0.5;
+  for (let i = 0; i <= 4; i++) {
+    const y = pad.t + (chartH / 4) * i;
+    ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(W - pad.r, y); ctx.stroke();
+    ctx.fillStyle = textColor; ctx.font = '10px system-ui';
+    ctx.textAlign = 'right'; ctx.fillText(Math.round(maxVal - (maxVal / 4) * i), pad.l - 6, y + 4);
+  }
+
+  for (let i = 0; i < labels.length; i++) {
+    const x = pad.l + gap + i * (barW + gap);
+    const h = (data[i] / maxVal) * chartH;
+    const y = pad.t + chartH - h;
+    const grad = ctx.createLinearGradient(x, y, x, pad.t + chartH);
+    grad.addColorStop(0, colors[i % colors.length]);
+    grad.addColorStop(1, colors[i % colors.length] + '44');
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.roundRect(x, y, barW, h, [4, 4, 0, 0]);
+    ctx.fill();
+
+    ctx.fillStyle = textColor; ctx.font = '9px system-ui';
+    ctx.textAlign = 'center';
+    ctx.save();
+    ctx.translate(x + barW / 2, pad.t + chartH + 8);
+    ctx.rotate(-0.5);
+    ctx.fillText(labels[i].length > 10 ? labels[i].substring(0, 9) + '..' : labels[i], 0, 0);
+    ctx.restore();
+
+    ctx.fillStyle = colors[i % colors.length]; ctx.font = 'bold 10px system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText(data[i], x + barW / 2, y - 4);
+  }
+}
+
+function renderCharts(ads) {
+  const formatDist = {};
+  for (const ad of ads) formatDist[ad.formato] = (formatDist[ad.formato] || 0) + 1;
+  const fEntries = Object.entries(formatDist).sort((a,b) => b[1] - a[1]);
+  const fLabels = fEntries.map(e => e[0]);
+  const fData = fEntries.map(e => e[1]);
+  const fMax = Math.max(...fData, 1);
+  const fColors = ['#6366f1','#22c55e','#f97316','#ec4899','#3b82f6','#eab308'];
+  drawBar('chart-formats', fLabels, fData, fColors, fMax * 1.15);
+
+  const angleDist = {};
+  for (const ad of ads) angleDist[ad.angulo] = (angleDist[ad.angulo] || 0) + 1;
+  const aEntries = Object.entries(angleDist).sort((a,b) => b[1] - a[1]).slice(0, 8);
+  const aLabels = aEntries.map(e => e[0]);
+  const aData = aEntries.map(e => e[1]);
+  const aMax = Math.max(...aData, 1);
+  const aColors = ['#ec4899','#6366f1','#22c55e','#f97316','#3b82f6','#eab308','#14b8a6','#ef4444'];
+  drawBar('chart-angles', aLabels, aData, aColors, aMax * 1.15);
+}
+window.addEventListener('resize', function() {
+  const active = document.querySelector('.nav-item.active');
+  if (active && active.dataset.section === 'overview') {
+    const ads = getAllAds(_nichoF);
+    renderCharts(ads);
+  }
+});
+
+// ===== VIDEO MODAL =====
+(function() {
+  const ov = document.createElement('div');
+  ov.id = 'video-modal';
+  ov.className = 'video-modal-overlay';
+  ov.innerHTML = '<div style="position:relative;max-width:90vw;max-height:85vh">' +
+    '<video id="modal-video" controls autoplay style="max-width:90vw;max-height:80vh;border-radius:8px;background:#000"></video>' +
+    '<div id="modal-img-wrap" style="display:none"><img id="modal-img" style="max-width:90vw;max-height:80vh;border-radius:8px"></div>' +
+    '<button onclick="closeVideoModal()" style="position:absolute;top:-12px;right:-12px;width:32px;height:32px;border-radius:50%;border:none;background:var(--accent);color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700">&#10005;</button>' +
+    '</div>' +
+    '<div style="margin-top:12px;display:flex;gap:8px" id="modal-actions"></div>';
+  document.body.appendChild(ov);
+  ov.addEventListener('click', function(e) { if (e.target === ov) closeVideoModal(); });
+})();
+
+function openVideoModal(vidUrl, thumbUrl, adId) {
+  const ov = document.getElementById('video-modal');
+  const vid = document.getElementById('modal-video');
+  const imgWrap = document.getElementById('modal-img-wrap');
+  const img = document.getElementById('modal-img');
+  const actions = document.getElementById('modal-actions');
+
+  if (vidUrl) {
+    vid.src = vidUrl;
+    vid.style.display = 'block';
+    imgWrap.style.display = 'none';
+  } else if (thumbUrl) {
+    vid.style.display = 'none';
+    img.src = thumbUrl;
+    imgWrap.style.display = 'block';
+  }
+
+  let btns = '';
+  if (vidUrl && thumbUrl) btns += '<button onclick="toggleModalView()" style="padding:6px 14px;background:var(--bg-3);border:1px solid var(--border);border-radius:6px;color:var(--text-1);cursor:pointer;font-size:11px;font-family:inherit">Toggle Video/Image</button>';
+  if (adId) btns += `<a href="https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=US&search_type=keyword_unordered&q=${encodeURIComponent(adId)}" target="_blank" style="padding:6px 14px;background:var(--accent);border:none;border-radius:6px;color:#fff;cursor:pointer;font-size:11px;text-decoration:none;font-family:inherit">View in Ad Library</a>`;
+  actions.innerHTML = btns;
+  ov.style.display = 'flex';
+  document.addEventListener('keydown', escModal);
+}
+
+function closeVideoModal() {
+  const ov = document.getElementById('video-modal');
+  const vid = document.getElementById('modal-video');
+  vid.pause(); vid.src = '';
+  ov.style.display = 'none';
+  document.removeEventListener('keydown', escModal);
+}
+
+function escModal(e) { if (e.key === 'Escape') closeVideoModal(); }
+
+function toggleModalView() {
+  const vid = document.getElementById('modal-video');
+  const imgWrap = document.getElementById('modal-img-wrap');
+  if (vid.style.display === 'none') {
+    vid.style.display = 'block';
+    imgWrap.style.display = 'none';
+    vid.play();
+  } else {
+    vid.pause();
+    vid.style.display = 'none';
+    imgWrap.style.display = 'block';
+  }
+}
+
+// ===== DISCOVERY =====
+function toggleDiscForm() {
+  const f = document.getElementById('disc-form');
+  f.style.display = f.style.display === 'block' ? 'none' : 'block';
+}
+
+function salvarDiscovery() {
+  const name = document.getElementById('disc-name').value.trim();
+  if (!name) { showToast('Brand name is required', 'info'); return; }
+  const entry = {
+    id: 'disc-' + Date.now(),
+    name: name,
+    url: document.getElementById('disc-url').value.trim(),
+    nicho: document.getElementById('disc-niche').value,
+    notes: document.getElementById('disc-notes').value.trim(),
+    added: new Date().toISOString().slice(0, 10)
+  };
+  _discoveryData.push(entry);
+  saveDiscoveryData();
+  document.getElementById('disc-name').value = '';
+  document.getElementById('disc-url').value = '';
+  document.getElementById('disc-notes').value = '';
+  toggleDiscForm();
+  renderDiscovery();
+  showToast('Brand added to Discovery');
+}
+
+function removeDiscovery(id) {
+  _discoveryData = _discoveryData.filter(d => d.id !== id);
+  saveDiscoveryData();
+  renderDiscovery();
+}
+
+function renderDiscovery() {
+  const filtered = _nichoF === 'all' ? _discoveryData : _discoveryData.filter(d => d.nicho === _nichoF);
+  document.getElementById('disc-table').innerHTML = filtered.length
+    ? `<table>
+        <thead><tr><th>Brand</th><th>Niche</th><th>Website</th><th>Notes</th><th>Added</th><th>Actions</th></tr></thead>
+        <tbody>${filtered.map(d => `<tr>
+          <td style="font-weight:600">${escHtml(d.name)}</td>
+          <td><span class="brand-niche" style="background:${nicheColor(d.nicho)}22;color:${nicheColor(d.nicho)};margin:0">${nicheLabel(d.nicho)}</span></td>
+          <td style="font-size:11px">${d.url ? `<a href="https://${escHtml(d.url)}" target="_blank" style="color:var(--accent)">${escHtml(d.url)}</a>` : '-'}</td>
+          <td style="font-size:11px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escHtml(d.notes)}">${escHtml(d.notes)}</td>
+          <td style="font-size:11px;font-family:'JetBrains Mono',monospace;white-space:nowrap">${d.added === 'seed' ? '<span style="color:var(--text-3)">seed</span>' : d.added}</td>
+          <td style="white-space:nowrap">
+            <a href="https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=US&search_type=keyword_unordered&q=${encodeURIComponent(d.name)}" target="_blank" style="color:var(--accent);font-size:11px;margin-right:8px" title="Search Ad Library">Ad Library</a>
+            ${d.added !== 'seed' ? `<button onclick="removeDiscovery('${d.id}')" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:11px;font-family:inherit" title="Remove">Remove</button>` : ''}
+          </td>
+        </tr>`).join('')}</tbody></table>`
+    : '<div class="empty-state"><p>No brands discovered yet. Click "+ Add Brand" to start tracking.</p></div>';
+  document.getElementById('discovery-badge').textContent = _discoveryData.length;
+}
+
+// ===== RICH CATALOG ACTIONS =====
+function toggleAdMenu(btn) {
+  const menu = btn.nextElementSibling;
+  document.querySelectorAll('.ad-actions-menu.open').forEach(m => { if (m !== menu) m.classList.remove('open'); });
+  menu.classList.toggle('open');
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.ad-actions')) document.querySelectorAll('.ad-actions-menu.open').forEach(m => m.classList.remove('open'));
+});
+
 // ===== INIT =====
+loadDiscoveryData();
 renderNicheFilters();
 renderOverview();
 
