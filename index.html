@@ -586,7 +586,7 @@ function getAllAds(nichoFilter) {
     if (nichoFilter && nichoFilter !== 'all' && brand.nicho !== nichoFilter) continue;
     const catalog = ADS_CATALOG[brand.id] || [];
     for (const ad of catalog) {
-      ads.push({ ...ad, brandId: brand.id, brandName: brand.name, nicho: brand.nicho });
+      ads.push({ ...ad, brandId: brand.id, brandName: brand.name, nicho: brand.nicho, brandPageId: brand.pageId || '' });
     }
   }
   return ads;
@@ -841,7 +841,7 @@ function renderCatalogTable() {
   document.getElementById('catalog-table').innerHTML = `<table>
     <thead><tr><th>Ad ID</th><th>Brand</th><th>Hook</th><th>Format</th><th>Angle</th><th>Awareness</th><th>Vars</th><th>Control</th><th></th></tr></thead>
     <tbody>${ads.map(a => `<tr>
-      <td style="white-space:nowrap"><a href="https://www.facebook.com/ads/library/?id=${encodeURIComponent(a.adId)}" target="_blank" style="color:var(--accent);text-decoration:none;font-family:'JetBrains Mono',monospace;font-size:11px" title="View in Meta Ad Library">${escHtml(a.adId)}</a></td>
+      <td style="white-space:nowrap"><a href="${a.brandPageId ? 'https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=US&view_all_page_id='+encodeURIComponent(a.brandPageId) : 'https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=US&search_type=keyword_unordered&q='+encodeURIComponent(a.brandName)}" target="_blank" style="color:var(--accent);text-decoration:none;font-family:'JetBrains Mono',monospace;font-size:11px" title="View ${escHtml(a.brandName)} in Meta Ad Library">${escHtml(a.adId)}</a></td>
       <td style="font-weight:600;white-space:nowrap">${escHtml(a.brandName)}</td>
       <td style="max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer" title="${escHtml(a.hookText)}" onclick="openVideoModal('','','${escHtml(a.hookText).replace(/'/g,"\\'")}')"><span style="color:var(--accent);margin-right:4px">&#9654;</span>${escHtml(a.hookText)}</td>
       <td>${formatTag(a.formato)}</td>
