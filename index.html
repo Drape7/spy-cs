@@ -248,6 +248,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg-0);color:var(-
       <div class="nav-section">Core</div>
       <div class="nav-item active" data-section="overview"><span class="icon">&#9678;</span>Overview</div>
       <div class="nav-item" data-section="brands"><span class="icon">&#9733;</span>Brands<span class="nav-badge" id="brands-badge">0</span></div>
+      <div class="nav-item" data-section="brand-dir"><span class="icon">&#128218;</span>Brand Directory<span class="nav-badge" id="brand-dir-badge">0</span></div>
       <div class="nav-item" data-section="catalog"><span class="icon">&#9881;</span>Ad Catalog<span class="nav-badge" id="catalog-badge">0</span></div>
       <div class="nav-item" data-section="controls"><span class="icon">&#9650;</span>Controls<span class="nav-badge" id="controls-badge" style="background:var(--green-bg);color:var(--green)">0</span></div>
       <div class="nav-section">Strategy</div>
@@ -293,6 +294,11 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg-0);color:var(-
       </div>
 
       <div class="section" id="sec-brands"><div class="brand-grid" id="brand-grid"></div></div>
+
+      <div class="section" id="sec-brand-dir">
+        <div class="filter-bar" id="brand-dir-filters"></div>
+        <div class="table-card" id="brand-dir-table"></div>
+      </div>
 
       <div class="section" id="sec-catalog">
         <div class="filter-bar" id="catalog-filters"></div>
@@ -614,23 +620,156 @@ let _kwLang = 'en';
 
 // ===== BRANDS =====
 const BRANDS = [
-  { id:'seed', name:'Seed', nicho:'health', url:'seed.com', pageId:'', posicionamento:'Science-first probiotics. DS-01 synbiotic. "2 capsules, 24 strains, $2/day". ViaCap delivery tech.', totalAds:210, videoPercent:45, controle:'The probiotic your gut has been missing', dataUltimoScan:'2026-09-02', status:'active' },
-  { id:'ag1', name:'AG1 (Athletic Greens)', nicho:'health', url:'drinkag1.com', pageId:'', posicionamento:'All-in-one greens. "75 vitamins in 1 scoop". Massive creator network. Podcast sponsorship king.', totalAds:380, videoPercent:65, controle:'I started taking AG1 and noticed...', dataUltimoScan:'2026-09-02', status:'active' },
-  { id:'bioma', name:'Bioma', nicho:'health', url:'bioma.health', pageId:'', posicionamento:'Quiz-first weight-loss/gut. GLP-1 trend-jack. Template modular. Discount-heavy.', totalAds:1300, videoPercent:55, controle:'I tried every diet until my doctor told me...', dataUltimoScan:'2026-09-02', status:'active' },
-  { id:'armra', name:'ARMRA', nicho:'health', url:'tryarmra.com', pageId:'', posicionamento:'Colostrum revival. 400+ bioactives. "4 layers of gut wall". Attack ads vs competitors.', totalAds:210, videoPercent:50, controle:'Your gut lining is leaking and you don\'t know it', dataUltimoScan:'2026-09-02', status:'active' },
+  { id:'seed', name:'Seed', nicho:'health', url:'seed.com', pageId:'178024832922517', posicionamento:'Science-first probiotics. DS-01 synbiotic. "2 capsules, 24 strains, $2/day". ViaCap delivery tech.', totalAds:210, videoPercent:45, controle:'The probiotic your gut has been missing', dataUltimoScan:'2026-09-02', status:'active' },
+  { id:'ag1', name:'AG1 (Athletic Greens)', nicho:'health', url:'drinkag1.com', pageId:'183869772601', posicionamento:'All-in-one greens. "75 vitamins in 1 scoop". Massive creator network. Podcast sponsorship king.', totalAds:380, videoPercent:65, controle:'I started taking AG1 and noticed...', dataUltimoScan:'2026-09-02', status:'active' },
+  { id:'bioma', name:'Bioma', nicho:'health', url:'bioma.health', pageId:'111684105057189', posicionamento:'Quiz-first weight-loss/gut. GLP-1 trend-jack. Template modular. Discount-heavy.', totalAds:1300, videoPercent:55, controle:'I tried every diet until my doctor told me...', dataUltimoScan:'2026-09-02', status:'active' },
+  { id:'armra', name:'ARMRA', nicho:'health', url:'tryarmra.com', pageId:'109196117495123', posicionamento:'Colostrum revival. 400+ bioactives. "4 layers of gut wall". Attack ads vs competitors.', totalAds:210, videoPercent:50, controle:'Your gut lining is leaking and you don\'t know it', dataUltimoScan:'2026-09-02', status:'active' },
   { id:'tatcha', name:'Tatcha', nicho:'skincare', url:'tatcha.com', pageId:'', posicionamento:'Japanese beauty rituals. Luxury-accessible. Dewy Skin Cream hero. Sephora distribution.', totalAds:85, videoPercent:40, controle:'The moisturizer that sold out 5 times', dataUltimoScan:'2026-09-02', status:'active' },
   { id:'ordinary', name:'The Ordinary', nicho:'skincare', url:'theordinary.com', pageId:'', posicionamento:'Clinical ingredients at honest prices. Ingredient-forward. Anti-markup positioning.', totalAds:120, videoPercent:30, controle:'Why pay $80 for a serum when...', dataUltimoScan:'2026-09-02', status:'active' },
   { id:'paulas', name:"Paula's Choice", nicho:'skincare', url:'paulaschoice.com', pageId:'', posicionamento:'Research-driven. BHA exfoliant hero. "Smart, safe beauty". Anti-hype.', totalAds:95, videoPercent:35, controle:'The BHA that changed my skin', dataUltimoScan:'2026-09-02', status:'active' },
   { id:'vuori', name:'Vuori', nicho:'apparel', url:'vuoriclothing.com', pageId:'', posicionamento:'Performance apparel for life. Premium athleisure. "Investment in your happiness".', totalAds:150, videoPercent:60, controle:'These are the most comfortable shorts I own', dataUltimoScan:'2026-09-02', status:'active' },
-  { id:'trueclassic', name:'True Classic', nicho:'apparel', url:'trueclassictees.com', pageId:'', posicionamento:'Perfect-fit basics for men. "Designed to make you look good". Value + fit.', totalAds:280, videoPercent:70, controle:'My wife can\'t stop buying me these shirts', dataUltimoScan:'2026-09-02', status:'active' },
+  { id:'trueclassic', name:'True Classic', nicho:'apparel', url:'trueclassictees.com', pageId:'661315797647911', posicionamento:'Perfect-fit basics for men. "Designed to make you look good". Value + fit.', totalAds:280, videoPercent:70, controle:'My wife can\'t stop buying me these shirts', dataUltimoScan:'2026-09-02', status:'active' },
   { id:'quince', name:'Quince', nicho:'apparel', url:'onequince.com', pageId:'', posicionamento:'Luxury materials, factory-direct prices. Cashmere, linen, silk. Transparent pricing.', totalAds:110, videoPercent:25, controle:'$50 cashmere that looks like $300', dataUltimoScan:'2026-09-02', status:'active' },
   { id:'mejuri', name:'Mejuri', nicho:'accessories', url:'mejuri.com', pageId:'', posicionamento:'Fine jewelry for everyday. "Luxury for your damn self". 14k gold, vermeil.', totalAds:130, videoPercent:35, controle:'Fine jewelry you never take off', dataUltimoScan:'2026-09-02', status:'active' },
   { id:'analuisa', name:'Ana Luisa', nicho:'accessories', url:'analuisa.com', pageId:'', posicionamento:'Sustainable jewelry. Carbon-neutral. "Guilt-free luxury". Mid-price.', totalAds:90, videoPercent:40, controle:'Jewelry that doesn\'t cost the earth', dataUltimoScan:'2026-09-02', status:'active' },
   { id:'gorjana', name:'Gorjana', nicho:'accessories', url:'gorjana.com', pageId:'', posicionamento:'California-cool layering jewelry. Gold-dipped. Stack/layer positioning.', totalAds:75, videoPercent:30, controle:'The gold layering necklace everyone asks about', dataUltimoScan:'2026-09-02', status:'active' },
   { id:'longwell', name:'Longwell & Co.', nicho:'cookware', url:'longwell.co', pageId:'1048635751671568', posicionamento:'Fear-based PFAS. Titanium pure. "25-year warranty". Price anchor vs competitors.', totalAds:129, videoPercent:40, controle:'After my third nonstick pan peeled in two years...', dataUltimoScan:'2026-09-02', status:'client' },
-  { id:'hexclad', name:'HexClad', nicho:'cookware', url:'hexclad.com', pageId:'', posicionamento:'Hybrid stainless-steel + non-stick. Gordon Ramsay endorsement. "Restaurant to home".', totalAds:850, videoPercent:65, controle:'Gordon Ramsay doesn\'t use non-stick. He uses this.', dataUltimoScan:'2026-09-02', status:'active' },
-  { id:'ourplace', name:'Our Place', nicho:'cookware', url:'fromourplace.com', pageId:'', posicionamento:'Always Pan hero. Replaces 8 pieces. Instagram-aesthetic. Multicultural cooking.', totalAds:420, videoPercent:55, controle:'This one pan replaced 8 in my kitchen', dataUltimoScan:'2026-09-02', status:'active' },
-  { id:'caraway', name:'Caraway', nicho:'cookware', url:'carawayhome.com', pageId:'', posicionamento:'Ceramic non-stick. Non-toxic positioning. Beautiful storage. Wedding registry play.', totalAds:380, videoPercent:50, controle:'I threw away all my old pans after learning about PFAS', dataUltimoScan:'2026-09-02', status:'active' }
+  { id:'hexclad', name:'HexClad', nicho:'cookware', url:'hexclad.com', pageId:'306050696452078', posicionamento:'Hybrid stainless-steel + non-stick. Gordon Ramsay endorsement. "Restaurant to home".', totalAds:850, videoPercent:65, controle:'Gordon Ramsay doesn\'t use non-stick. He uses this.', dataUltimoScan:'2026-09-02', status:'active' },
+  { id:'ourplace', name:'Our Place', nicho:'cookware', url:'fromourplace.com', pageId:'247732222787053', posicionamento:'Always Pan hero. Replaces 8 pieces. Instagram-aesthetic. Multicultural cooking.', totalAds:420, videoPercent:55, controle:'This one pan replaced 8 in my kitchen', dataUltimoScan:'2026-09-02', status:'active' },
+  { id:'caraway', name:'Caraway', nicho:'cookware', url:'carawayhome.com', pageId:'2290435917939387', posicionamento:'Ceramic non-stick. Non-toxic positioning. Beautiful storage. Wedding registry play.', totalAds:380, videoPercent:50, controle:'I threw away all my old pans after learning about PFAS', dataUltimoScan:'2026-09-02', status:'active' }
+];
+
+// ===== BRAND DIRECTORY =====
+const BRAND_DIRECTORY = [
+  {brand:'40 Plus & Fabulous',nicho:'health',site:'40plusandfabulous.com',pageId:'465173070005445',tier:'watchlist',what:'Supplements targeted at women over 40.',creatives:[]},
+  {brand:'AG1',nicho:'health',site:'drinkag1.com',pageId:'183869772601',tier:'watchlist',what:'All-in-one greens powder.',creatives:[]},
+  {brand:'ALOHA',nicho:'health',site:'aloha.com',pageId:'465725546813790',tier:'watchlist',what:'Organic plant-protein bars & shakes.',creatives:[]},
+  {brand:'Apollo Neuro',nicho:'health',site:'apolloneuro.com',pageId:'132635250674652',tier:'core',what:'Wearable that emits soothing vibrations.',creatives:['DEMO','SCIENCE','UGC']},
+  {brand:'ARMRA',nicho:'health',site:'tryarmra.com',pageId:'109196117495123',tier:'watchlist',what:'Bovine colostrum (\'Revive\').',creatives:['EDUCATIONAL','UGC','FOUNDER']},
+  {brand:'Auri Nutrition',nicho:'health',site:'aurinu.com',pageId:'103228825694076',tier:'watchlist',what:'Gummy supplements.',creatives:[]},
+  {brand:'Beam',nicho:'health',site:'beamorganics.com',pageId:'552302508548327',tier:'core',what:'Nighttime cocoa (Dream Powder) for sleep.',creatives:['UGC','CELEBRITY','DEMO','STATIC']},
+  {brand:'Better Wild',nicho:'health',site:'betterwild.com',pageId:'119553257899137',tier:'watchlist',what:'Natural supplement line.',creatives:[]},
+  {brand:'Bioma',nicho:'health',site:'bioma.com',pageId:'111684105057189',tier:'priority',what:'Microbiome capsules for bloating & weight.',creatives:['ADVERTORIAL','QUIZ FUNNEL','BEFORE/AFTER','UGC']},
+  {brand:'BiOptimizers',nicho:'health',site:'bioptimizers.com',pageId:'828945840462974',tier:'priority',what:'7-form magnesium complex.',creatives:['ADVERTORIAL','VSL','EMAIL','STATIC']},
+  {brand:'Blueprint',nicho:'health',site:'blueprint.bryanjohnson.com',pageId:'636616989542751',tier:'trendsetter',what:'Bryan Johnson\'s longevity stack & food.',creatives:['FOUNDER CONTENT','STATIC','UGC']},
+  {brand:'BodyBio',nicho:'health',site:'bodybio.com',pageId:'300662169164',tier:'watchlist',what:'Cell-membrane (phospholipid) & gut supplements.',creatives:['EDUCATIONAL','LONG-FORM','STATIC']},
+  {brand:'BON CHARGE',nicho:'health',site:'boncharge.com',pageId:'1847630108899605',tier:'core',what:'Red-light, blue-blockers, grounding gear.',creatives:['EDUCATIONAL','UGC','STATIC']},
+  {brand:'Colon Broom',nicho:'health',site:'colonbroom.com',pageId:'103357974681001',tier:'priority',what:'Flavored psyllium fiber for bloating & regularity.',creatives:['QUIZ FUNNEL','ADVERTORIAL','UGC']},
+  {brand:'Corecare',nicho:'health',site:'corecare.com',pageId:'973746629154148',tier:'watchlist',what:'DR supplement brand.',creatives:[]},
+  {brand:'Cymbiotika',nicho:'health',site:'cymbiotika.com',pageId:'1506813839611097',tier:'priority',what:'Premium liposomal supplements.',creatives:['UGC','FOUNDER','ADVERTORIAL','STATIC']},
+  {brand:'Daniel L. Abrams MD',nicho:'health',site:'drabrams.com',pageId:'110496555047406',tier:'watchlist',what:'Doctor-fronted supplement brand.',creatives:['DOCTOR VSL','ADVERTORIAL','EMAIL']},
+  {brand:'David',nicho:'health',site:'eatdavid.com',pageId:'357167600818818',tier:'priority',what:'28g-protein / 150-cal protein bar.',creatives:['STATIC','FOUNDER','UGC']},
+  {brand:'Everyday Dose',nicho:'health',site:'everydaydose.com',pageId:'102454544917397',tier:'watchlist',what:'Mushroom + collagen coffee alternative.',creatives:['FOUNDER','UGC','STATIC']},
+  {brand:'Fatty15',nicho:'health',site:'fatty15.com',pageId:'105519101297273',tier:'priority',what:'C15:0 (pentadecanoic acid) cellular supplement.',creatives:['SCIENCE ADVERTORIAL','FOUNDER','STATIC']},
+  {brand:'Feals',nicho:'health',site:'feals.com',pageId:'2475780149117956',tier:'watchlist',what:'CBD oil drops (subscription).',creatives:[]},
+  {brand:'Frog Fuel',nicho:'health',site:'frogfuel.com',pageId:'431545240193736',tier:'watchlist',what:'Liquid collagen protein (veteran-founded).',creatives:['FOUNDER','ADVERTORIAL','STATIC']},
+  {brand:'Function Health',nicho:'health',site:'functionhealth.com',pageId:'101579225334663',tier:'trendsetter',what:'100+ biomarker lab-testing membership (Attia-backed).',creatives:['WAITLIST','UGC','AUTHORITY','STATIC']},
+  {brand:'Goli',nicho:'health',site:'goli.com',pageId:'310668346413198',tier:'watchlist',what:'ACV gummies & wellness gummies.',creatives:['UGC','INFLUENCER','STATIC']},
+  {brand:'Golo',nicho:'health',site:'golo.com',pageId:'416345998448711',tier:'priority',what:'Insulin-management weight-loss program.',creatives:['ADVERTORIAL','TESTIMONIAL','VSL']},
+  {brand:'GroundingWell',nicho:'health',site:'groundingwell.com',pageId:'107085495749996',tier:'watchlist',what:'Grounding/earthing mats & sheets.',creatives:['EDUCATIONAL','ADVERTORIAL','DEMO']},
+  {brand:'Grüns',nicho:'health',site:'getgruns.com',pageId:'107585658730958',tier:'watchlist',what:'Gummy greens (whole-food blend).',creatives:['UGC','DEMO','STATIC']},
+  {brand:'Gundry MD',nicho:'health',site:'gundrymd.com',pageId:'1618980005093976',tier:'watchlist',what:'Dr. Gundry\'s lectin-free supplement line.',creatives:['ADVERTORIAL','LONG VSL','EMAIL']},
+  {brand:'Happy Mammoth',nicho:'health',site:'happymammoth.com',pageId:'1343771369029582',tier:'watchlist',what:'Hormone & gut supplements for women 40+.',creatives:['ADVERTORIAL','QUIZ','UGC']},
+  {brand:'HigherDose',nicho:'health',site:'higherdose.com',pageId:'1594131677582183',tier:'priority',what:'Infrared sauna blanket, red-light mask, PEMF mat.',creatives:['DEMO','UGC','STATIC']},
+  {brand:'Huel',nicho:'health',site:'huel.com',pageId:'2281559212068421',tier:'watchlist',what:'Complete-nutrition powders & ready meals.',creatives:['UGC','EDUCATIONAL','STATIC']},
+  {brand:'Humantra',nicho:'health',site:'humantra.com',pageId:'101344742140907',tier:'watchlist',what:'Electrolyte hydration sachets (UK).',creatives:[]},
+  {brand:'IM8',nicho:'health',site:'im8.com',pageId:'696753946860832',tier:'watchlist',what:'Beckham-backed daily health blend.',creatives:[]},
+  {brand:'IQBAR',nicho:'health',site:'iqbar.com',pageId:'977292735718873',tier:'core',what:'Plant-protein + nootropic bars & mixes.',creatives:['UGC','OFFER','STATIC']},
+  {brand:'Just Thrive',nicho:'health',site:'justthrivehealth.com',pageId:'574658612589724',tier:'core',what:'Spore-based probiotic + immune.',creatives:['ADVERTORIAL','PODCAST-STYLE','STATIC']},
+  {brand:'Ketone-IQ',nicho:'health',site:'hvmn.com',pageId:'172554736609978',tier:'core',what:'Drinkable ketones (from H.V.M.N.).',creatives:['DEMO','ATHLETE UGC','STATIC']},
+  {brand:'Kind Patches',nicho:'health',site:'kindpatches.co',pageId:'114284924983655',tier:'watchlist',what:'Transdermal vitamin/wellness patches.',creatives:['DEMO','UGC','STATIC']},
+  {brand:'Lumen',nicho:'health',site:'lumen.me',pageId:'766265230230323',tier:'priority',what:'Handheld breath-based metabolism tracker + app.',creatives:['DEMO','UGC','FOUNDER','STATIC']},
+  {brand:'Magic Mind',nicho:'health',site:'magicmind.com',pageId:'104654481112161',tier:'trendsetter',what:'2-oz matcha + nootropic + adaptogen shot.',creatives:['UGC','FOUNDER','STATIC']},
+  {brand:'MaryRuth\'s',nicho:'health',site:'maryruthorganics.com',pageId:'582115538507595',tier:'watchlist',what:'Liquid vitamins & morning multivitamin.',creatives:['FOUNDER','UGC','STATIC']},
+  {brand:'MUD\\WTR',nicho:'health',site:'mudwtr.com',pageId:'172538983355501',tier:'priority',what:'Mushroom-cacao coffee alternative.',creatives:['FOUNDER','UGC','STATIC','ADVERTORIAL']},
+  {brand:'Needed',nicho:'health',site:'thisisneeded.com',pageId:'160152787907581',tier:'core',what:'Science-forward prenatal & postpartum.',creatives:['EDUCATIONAL','FOUNDER','STATIC']},
+  {brand:'Neupril',nicho:'health',site:'neupril.com',pageId:'584958974691262',tier:'watchlist',what:'Nerve-support supplement.',creatives:[]},
+  {brand:'Noom',nicho:'health',site:'noom.com',pageId:'112936925459222',tier:'core',what:'Psychology-based weight-loss app.',creatives:['QUIZ FUNNEL','UGC','STATIC']},
+  {brand:'Nordic Wellness Secrets',nicho:'health',site:'nordicwellnesssecrets.com',pageId:'697776180088948',tier:'watchlist',what:'Nordic-positioned wellness line.',creatives:[]},
+  {brand:'Norse Organics',nicho:'health',site:'norseorganics.com',pageId:'125701703959711',tier:'watchlist',what:'Nordic-positioned supplement line.',creatives:[]},
+  {brand:'NOVOS',nicho:'health',site:'novoslabs.com',pageId:'110699237261692',tier:'core',what:'Longevity formula targeting the \'12 hallmarks of aging.\'',creatives:['ADVERTORIAL','STATIC','FOUNDER']},
+  {brand:'Nu Mind Wellness',nicho:'health',site:'numindwellness.com',pageId:'106303291136844',tier:'watchlist',what:'Nootropic & cognitive supplements.',creatives:[]},
+  {brand:'NŌX Relief',nicho:'health',site:'noxrelief.com',pageId:'573689055822786',tier:'watchlist',what:'Pain-relief device/product.',creatives:[]},
+  {brand:'O Positiv',nicho:'health',site:'opositiv.com',pageId:'103675775287114',tier:'priority',what:'URO (vaginal/UTI) & MENO (menopause) supplements.',creatives:['UGC','QUIZ','HUMOR','STATIC']},
+  {brand:'Olipop',nicho:'health',site:'drinkolipop.com',pageId:'162352551085006',tier:'trendsetter',what:'Prebiotic soda in nostalgia flavors.',creatives:['UGC','STATIC','EDUCATIONAL']},
+  {brand:'Order True Nutra',nicho:'health',site:'ordertruenutra.com',pageId:'110783967094952',tier:'watchlist',what:'DR supplement line.',creatives:[]},
+  {brand:'Organised Nutrition',nicho:'health',site:'organisednutrition.com',pageId:'110572315398561',tier:'watchlist',what:'Supplement brand.',creatives:[]},
+  {brand:'Oura',nicho:'health',site:'ouraring.com',pageId:'753245374771837',tier:'core',what:'Smart ring for sleep & readiness.',creatives:['UGC','DATA','STATIC']},
+  {brand:'Pendulum',nicho:'health',site:'pendulumlife.com',pageId:'110585076988359',tier:'core',what:'Strain-specific probiotics (Akkermansia); Halle Berry-backed.',creatives:['FOUNDER VSL','CELEBRITY UGC','STATIC']},
+  {brand:'Perelel',nicho:'health',site:'perelelhealth.com',pageId:'113778497070610',tier:'core',what:'OB/GYN-founded cyclical vitamins.',creatives:['FOUNDER','STATIC','UGC']},
+  {brand:'Poppi',nicho:'health',site:'drinkpoppi.com',pageId:'101077004856501',tier:'priority',what:'Prebiotic soda.',creatives:['UGC','CREATOR','STATIC']},
+  {brand:'Primal Queen',nicho:'health',site:'primalqueen.com',pageId:'125572610639402',tier:'watchlist',what:'Beef-organ supplements for women.',creatives:['FOUNDER','UGC','EDUCATIONAL']},
+  {brand:'Purely Nutrient',nicho:'health',site:'purelynutrient.com',pageId:'117961844742612',tier:'watchlist',what:'Beetroot & circulation supplements.',creatives:[]},
+  {brand:'Qualia',nicho:'health',site:'neurohacker.com',pageId:'788218057949099',tier:'core',what:'Nootropic & senolytic complexes.',creatives:['LONG VSL','ADVERTORIAL','EMAIL']},
+  {brand:'RealGood Essentials',nicho:'health',site:'realgoodessentials.com',pageId:'566208399909190',tier:'watchlist',what:'DR supplement brand.',creatives:[]},
+  {brand:'ReliefWave',nicho:'health',site:'reliefwave.com',pageId:'471767246026735',tier:'watchlist',what:'Pain-relief device.',creatives:[]},
+  {brand:'RYZE Superfoods',nicho:'health',site:'rfrize.com',pageId:'107940537227344',tier:'watchlist',what:'Mushroom coffee blend.',creatives:[]},
+  {brand:'Seed',nicho:'health',site:'seed.com',pageId:'178024832922517',tier:'priority',what:'MD/PhD-backed synbiotic (probiotic + prebiotic).',creatives:['FOUNDER VSL','EDU CAROUSEL','UGC','STATIC']},
+  {brand:'Sensate',nicho:'health',site:'getsensate.com',pageId:'560384350759176',tier:'core',what:'Chest device for vagus-nerve calm.',creatives:['DEMO','UGC','STATIC']},
+  {brand:'Serene Herbs',nicho:'health',site:'sereneherbs.com',pageId:'248307828359857',tier:'watchlist',what:'Herbal supplement line.',creatives:[]},
+  {brand:'SerlinoLab USA',nicho:'health',site:'serlinolab.com',pageId:'109948601800369',tier:'watchlist',what:'Lab-positioned supplement brand.',creatives:[]},
+  {brand:'Spacegoods',nicho:'health',site:'spacegoods.com',pageId:'104163495557745',tier:'watchlist',what:'Rainbow Dust mushroom/adaptogen blend.',creatives:[]},
+  {brand:'Sringe',nicho:'health',site:'sringe.com',pageId:'421933347662692',tier:'watchlist',what:'DR health brand.',creatives:[]},
+  {brand:'Stripes',nicho:'health',site:'stripes.co',pageId:'101296489263853',tier:'core',what:'Naomi Watts\' menopause beauty & wellness.',creatives:['FOUNDER/CELEBRITY','UGC','STATIC']},
+  {brand:'Supergut',nicho:'health',site:'supergut.com',pageId:'115908476556641',tier:'priority',what:'Resistant-starch fiber — \'nature\'s GLP-1.\'',creatives:['ADVERTORIAL','FOUNDER','UGC','STATIC']},
+  {brand:'The Black Stuff',nicho:'health',site:'theblackstuff.com',pageId:'104121048515901',tier:'watchlist',what:'UK supplement brand.',creatives:[]},
+  {brand:'Therabody',nicho:'health',site:'therabody.com',pageId:'1654265534786908',tier:'core',what:'Percussive therapy & recovery devices.',creatives:['DEMO','UGC','ATHLETE']},
+  {brand:'Thesis',nicho:'health',site:'takethesis.com',pageId:'102825878274846',tier:'core',what:'Personalized nootropic blends.',creatives:['QUIZ FUNNEL','UGC','FOUNDER']},
+  {brand:'Timeline',nicho:'health',site:'timelinenutrition.com',pageId:'108103380538684',tier:'priority',what:'Urolithin A for mitochondrial & muscle health.',creatives:['SCIENCE VSL','STATIC','UGC']},
+  {brand:'True Basics',nicho:'health',site:'truebasics.com',pageId:'287066891960802',tier:'watchlist',what:'Sports & wellness supplements.',creatives:[]},
+  {brand:'Ultrahuman',nicho:'health',site:'ultrahuman.com',pageId:'106548397771590',tier:'core',what:'Metabolic + smart-ring wearable (CGM).',creatives:['DEMO','DATA','UGC']},
+  {brand:'Wild Nutrition',nicho:'health',site:'wildnutrition.com',pageId:'400492316689279',tier:'watchlist',what:'UK \'food-grown\' supplements for women.',creatives:[]},
+  {brand:'Winona',nicho:'health',site:'bywinona.com',pageId:'102856784719441',tier:'core',what:'Menopause HRT telehealth.',creatives:['QUIZ','ADVERTORIAL','UGC']},
+  {brand:'Ancestral Cosmetics',nicho:'skincare',site:'ancestralcosmetics.com',pageId:'101258689556477',tier:'watchlist',what:'Tallow-based / ancestral skincare.',creatives:[]},
+  {brand:'Boka',nicho:'skincare',site:'bfreetm.com',pageId:'1588086141435020',tier:'core',what:'Nano-hydroxyapatite toothpaste.',creatives:['EDUCATIONAL','UGC','STATIC']},
+  {brand:'Bushbalm',nicho:'skincare',site:'bushbalm.com',pageId:'507028032816583',tier:'core',what:'Ingrown-hair & body care for private areas.',creatives:['UGC','EDUCATIONAL','STATIC']},
+  {brand:'City Beauty',nicho:'skincare',site:'citybeauty.com',pageId:'1431625556919604',tier:'watchlist',what:'Neck, crepey-skin & lip products for mature skin.',creatives:['ADVERTORIAL','BEFORE/AFTER','UGC']},
+  {brand:'Dr. Squatch',nicho:'skincare',site:'drsquatch.com',pageId:'118075261668462',tier:'watchlist',what:'Natural men\'s soap & grooming.',creatives:['HUMOR VSL','UGC','FOUNDER']},
+  {brand:'Fierce Nature',nicho:'skincare',site:'fiercenature.co',pageId:'120684006875490',tier:'watchlist',what:'UK natural skincare/wellness.',creatives:[]},
+  {brand:'Function of Beauty',nicho:'skincare',site:'functionofbeauty.com',pageId:'775663345866042',tier:'trendsetter',what:'Personalized hair, skin & body care.',creatives:['QUIZ FUNNEL','UGC','STATIC']},
+  {brand:'Hero Cosmetics',nicho:'skincare',site:'herocosmetics.com',pageId:'146046529286976',tier:'trendsetter',what:'Hydrocolloid acne patches.',creatives:['DEMO','UGC','STATIC']},
+  {brand:'Hismile',nicho:'skincare',site:'hismile.com',pageId:'1573441899601646',tier:'watchlist',what:'V34 colour corrector & flavored toothpaste.',creatives:['DEMO','UGC','CREATOR','STATIC']},
+  {brand:'Jones Road Beauty',nicho:'skincare',site:'jonesroadbeauty.com',pageId:'107371600800343',tier:'trendsetter',what:'Bobbi Brown\'s \'clean, no-makeup\' makeup.',creatives:['FOUNDER DEMO','UGC','STATIC','ADVERTORIAL']},
+  {brand:'K18',nicho:'skincare',site:'k18hair.com',pageId:'528049547317415',tier:'trendsetter',what:'Biotech \'molecular repair\' hair mask.',creatives:['DEMO','SCIENCE','BEFORE/AFTER','UGC']},
+  {brand:'Live Bearded',nicho:'skincare',site:'livebearded.com',pageId:'1658869244330031',tier:'watchlist',what:'Beard care, founder-led.',creatives:[]},
+  {brand:'Lume / Mando',nicho:'skincare',site:'lumedeodorant.com',pageId:'102001012705622',tier:'priority',what:'Whole-body deodorant (MD-founded).',creatives:['FOUNDER','UGC','HUMOR','DEMO']},
+  {brand:'Lumineux',nicho:'skincare',site:'lumineuxhealth.com',pageId:'758824584189646',tier:'core',what:'Non-toxic whitening & oral care.',creatives:['EDUCATIONAL','UGC','BEFORE/AFTER']},
+  {brand:'Manscaped',nicho:'skincare',site:'manscaped.com',pageId:'1545577295743703',tier:'priority',what:'Below-the-belt men\'s grooming.',creatives:['HUMOR UGC','DEMO','STATIC']},
+  {brand:'Medicube',nicho:'skincare',site:'medicube.us',pageId:'1236886609665645',tier:'priority',what:'K-beauty skincare + Age-R booster device.',creatives:['BEFORE/AFTER','DEMO','UGC']},
+  {brand:'Nutrafol',nicho:'skincare',site:'nutrafol.com',pageId:'581027778643874',tier:'priority',what:'Doctor-backed hair-growth supplement.',creatives:['ADVERTORIAL','BEFORE/AFTER','FOUNDER','UGC']},
+  {brand:'Polar Haircare',nicho:'skincare',site:'polarhaircare.com',pageId:'284185801452919',tier:'watchlist',what:'Hair care / scalp line.',creatives:[]},
+  {brand:'Prose',nicho:'skincare',site:'prose.com',pageId:'114651839249783',tier:'trendsetter',what:'Custom-formulated hair care from a quiz.',creatives:['QUIZ FUNNEL','UGC','STATIC']},
+  {brand:'Seranova',nicho:'skincare',site:'seranova.com',pageId:'425239627329921',tier:'watchlist',what:'Skincare brand.',creatives:[]},
+  {brand:'SNOW',nicho:'skincare',site:'trysnow.com',pageId:'613958365368983',tier:'priority',what:'LED teeth-whitening system.',creatives:['BEFORE/AFTER','VSL','DEMO','UGC']},
+  {brand:'Solawave',nicho:'skincare',site:'solawave.co',pageId:'153689201309487',tier:'core',what:'Red-light + microcurrent skincare wand.',creatives:['DEMO','BEFORE/AFTER','UGC']},
+  {brand:'Starface',nicho:'skincare',site:'starface.world',pageId:'653811821804243',tier:'trendsetter',what:'Star-shaped hydrocolloid pimple patches.',creatives:['UGC','DEMO','MEME','STATIC']},
+  {brand:'Sweet Bee Organics',nicho:'skincare',site:'sweetbeeorganics.com',pageId:'398593974332518',tier:'watchlist',what:'Organic skin & body care.',creatives:[]},
+  {brand:'Topicals',nicho:'skincare',site:'topicals.com',pageId:'2457542110944623',tier:'trendsetter',what:'Gen-Z skincare for chronic skin conditions.',creatives:['UGC','MEME','COMMUNITY','STATIC']},
+  {brand:'Underbrush Gum',nicho:'skincare',site:'underbrushgum.com',pageId:'118765104569561',tier:'watchlist',what:'Functional oral-care gum.',creatives:[]},
+  {brand:'Vacation',nicho:'skincare',site:'vacation.inc',pageId:'103689115185605',tier:'trendsetter',what:'Retro-themed \'world\'s best-smelling\' sunscreen.',creatives:['CONCEPT','UGC','MEME','STATIC']},
+  {brand:'Vegamour',nicho:'skincare',site:'vegamour.com',pageId:'1388685454586225',tier:'core',what:'Plant-based hair serums & supplements.',creatives:['BEFORE/AFTER','UGC','STATIC']},
+  {brand:'Birddogs',nicho:'apparel',site:'birddogs.com',pageId:'477720445687883',tier:'core',what:'Shorts & pants with a built-in liner.',creatives:['HUMOR','UGC','EMAIL']},
+  {brand:'Bombas',nicho:'apparel',site:'bombas.com',pageId:'155577444523958',tier:'core',what:'Comfort socks & basics; one-for-one donation.',creatives:['UGC','DEMO','STATIC']},
+  {brand:'Cuts Clothing',nicho:'apparel',site:'cutsclothing.com',pageId:'1010103632410348',tier:'core',what:'Elevated men\'s basics.',creatives:['UGC','DEMO','STATIC']},
+  {brand:'Hike Footwear',nicho:'apparel',site:'hikefootwear.com',pageId:'275270825974823',tier:'watchlist',what:'Barefoot-style comfort/orthopedic shoes.',creatives:['DEMO','UGC','ADVERTORIAL']},
+  {brand:'Hollow Socks',nicho:'apparel',site:'hollowsocks.com',pageId:'111034490269087',tier:'watchlist',what:'Comfort/compression socks.',creatives:[]},
+  {brand:'Huckberry',nicho:'apparel',site:'huckberry.com',pageId:'147169048627313',tier:'trendsetter',what:'Men\'s outdoor/lifestyle gear & content shop.',creatives:['CONTENT','EMAIL','UGC','STATIC']},
+  {brand:'Jack Archer',nicho:'apparel',site:'jack-archer.com',pageId:'104426892527088',tier:'core',what:'\'Jetlag\' performance dress pants.',creatives:['UGC','DEMO','STATIC']},
+  {brand:'Kizik',nicho:'apparel',site:'kizik.com',pageId:'2016247925274302',tier:'priority',what:'Hands-free, step-in shoes.',creatives:['DEMO','UGC','STATIC']},
+  {brand:'Koprez',nicho:'apparel',site:'koprez.com',pageId:'104789644587334',tier:'watchlist',what:'Compression socks & sleeves.',creatives:[]},
+  {brand:'Shinesty',nicho:'apparel',site:'shinesty.com',pageId:'168735513291523',tier:'trendsetter',what:'Bold-print underwear with a pouch (\'Ball Hammock\').',creatives:['HUMOR UGC','EMAIL','STATIC']},
+  {brand:'True Classic',nicho:'apparel',site:'trueclassictees.com',pageId:'661315797647911',tier:'priority',what:'Fitted men\'s tees & basics.',creatives:['FOUNDER','UGC','DEMO','STATIC']},
+  {brand:'Wolf & Shepherd',nicho:'apparel',site:'wolfandshepherd.com',pageId:'849565271744991',tier:'core',what:'Dress-sneaker performance hybrids.',creatives:['DEMO','STUNT','UGC']},
+  {brand:'Béis',nicho:'accessories',site:'beistravel.com',pageId:'339544476514942',tier:'trendsetter',what:'Shay Mitchell\'s travel bags & luggage.',creatives:['FOUNDER','DEMO','UGC','STATIC']},
+  {brand:'Ridge',nicho:'accessories',site:'ridgewallet.com',pageId:'176366735873065',tier:'trendsetter',what:'Slim metal wallets, keycases & carry.',creatives:['UGC','DEMO','STATIC','CONCEPT']},
+  {brand:'Ana Luisa',nicho:'accessories',site:'analuisa.com',pageId:'',tier:'core',what:'Affordable fine jewelry, sustainability-positioned.',creatives:[]},
+  {brand:'Gorjana',nicho:'accessories',site:'gorjana.com',pageId:'',tier:'core',what:'Everyday gold jewelry & layering pieces.',creatives:[]},
+  {brand:'Mejuri',nicho:'accessories',site:'mejuri.com',pageId:'',tier:'core',what:'Fine jewelry, everyday luxury positioning.',creatives:[]},
+  {brand:'Tatcha',nicho:'skincare',site:'tatcha.com',pageId:'',tier:'core',what:'Japanese beauty-ritual luxury skincare.',creatives:[]},
+  {brand:'The Ordinary',nicho:'skincare',site:'theordinary.com',pageId:'',tier:'core',what:'Clinical skincare at transparent pricing.',creatives:[]},
+  {brand:'Paula\'s Choice',nicho:'skincare',site:'paulaschoice.com',pageId:'',tier:'core',what:'Science-backed skincare (BHA exfoliant hero).',creatives:[]},
+  {brand:'Vuori',nicho:'apparel',site:'vuoriclothing.com',pageId:'',tier:'core',what:'Performance apparel with a SoCal aesthetic.',creatives:[]},
+  {brand:'Quince',nicho:'apparel',site:'onequince.com',pageId:'',tier:'core',what:'Luxury essentials at radically low prices (cashmere, linen).',creatives:[]}
 ];
 
 // ===== ADS CATALOG =====
@@ -913,7 +1052,7 @@ function nicheLabel(nicho) { return NICHE_CONFIG[nicho] ? NICHE_CONFIG[nicho].la
 
 // ===== NAVIGATION =====
 const TAB_TITLES = {
-  overview:'Overview', brands:'Brands', catalog:'Ad Catalog', controls:'Controls',
+  overview:'Overview', brands:'Brands', 'brand-dir':'Brand Directory', catalog:'Ad Catalog', controls:'Controls',
   coverage:'Coverage Map', gaps:'Gaps', angles:'Angles', 'spy-reports':'Spy Reports',
   timeline:'Timeline', compare:'Compare', teardowns:'Teardowns',
   'vsl-extract':'Extract VSL', config:'Config', keywords:'Keywords', discovery:'Auto-Discovery'
@@ -977,6 +1116,7 @@ function renderTab(tab) {
   switch (tab) {
     case 'overview': renderOverview(); break;
     case 'brands': renderBrands(); break;
+    case 'brand-dir': renderBrandDirectory(); break;
     case 'catalog': renderCatalog(); break;
     case 'controls': renderControls(); break;
     case 'coverage': renderCoverage(); break;
@@ -999,6 +1139,8 @@ function updateBadges() {
   const controls = computeControls(_nichoF);
   const gaps = computeGaps(_nichoF);
   document.getElementById('brands-badge').textContent = brands.length;
+  const dirBrands = _nichoF === 'all' ? BRAND_DIRECTORY : BRAND_DIRECTORY.filter(b => b.nicho === _nichoF);
+  document.getElementById('brand-dir-badge').textContent = dirBrands.length;
   document.getElementById('catalog-badge').textContent = ads.length;
   document.getElementById('controls-badge').textContent = controls.length;
   document.getElementById('gaps-badge').textContent = gaps.formatGaps.length + gaps.angleGaps.length;
@@ -1066,6 +1208,76 @@ function renderBrands() {
       </div>
     </div>`;
   }).join('');
+}
+
+// ===== BRAND DIRECTORY =====
+let _bdSort = {col:'brand',asc:true};
+function renderBrandDirectory() {
+  const fc = document.getElementById('brand-dir-filters');
+  if (!fc.innerHTML) {
+    const tiers = [...new Set(BRAND_DIRECTORY.map(b=>b.tier))].sort();
+    fc.innerHTML = `
+      <input type="text" id="bd-search" placeholder="Search brands..." oninput="renderBrandDirTable()">
+      <select id="bd-tier" onchange="renderBrandDirTable()"><option value="">All Tiers</option>${tiers.map(t=>`<option value="${t}">${t.charAt(0).toUpperCase()+t.slice(1)}</option>`).join('')}</select>`;
+  }
+  renderBrandDirTable();
+}
+
+function renderBrandDirTable() {
+  let list = _nichoF === 'all' ? [...BRAND_DIRECTORY] : BRAND_DIRECTORY.filter(b => b.nicho === _nichoF);
+  const search = (document.getElementById('bd-search')?.value || '').toLowerCase();
+  const tierF = document.getElementById('bd-tier')?.value || '';
+  if (search) list = list.filter(b => (b.brand + ' ' + b.what).toLowerCase().includes(search));
+  if (tierF) list = list.filter(b => b.tier === tierF);
+
+  list.sort((a,b) => {
+    let va = a[_bdSort.col] || '', vb = b[_bdSort.col] || '';
+    if (typeof va === 'string') va = va.toLowerCase();
+    if (typeof vb === 'string') vb = vb.toLowerCase();
+    if (va < vb) return _bdSort.asc ? -1 : 1;
+    if (va > vb) return _bdSort.asc ? 1 : -1;
+    return 0;
+  });
+
+  const arrow = c => _bdSort.col === c ? (_bdSort.asc ? ' &#9650;' : ' &#9660;') : '';
+  const thClick = c => `onclick="sortBrandDir('${c}')" style="cursor:pointer;user-select:none"`;
+
+  const tierBadge = t => {
+    const colors = {priority:'#ef4444',trendsetter:'#f59e0b',core:'#3b82f6',watchlist:'#6b7280'};
+    const c = colors[t] || '#6b7280';
+    return `<span class="tag" style="background:${c}22;color:${c};font-size:10px">${t}</span>`;
+  };
+
+  const adLibUrl = pid => pid ? `https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=US&view_all_page_id=${pid}` : '';
+
+  document.getElementById('brand-dir-table').innerHTML = `<div style="overflow-x:auto"><table>
+    <thead><tr>
+      <th ${thClick('brand')}>Brand${arrow('brand')}</th>
+      <th ${thClick('nicho')}>Niche${arrow('nicho')}</th>
+      <th>Ad Library</th>
+      <th>Site</th>
+      <th ${thClick('what')}>What${arrow('what')}</th>
+      <th ${thClick('tier')}>Tier${arrow('tier')}</th>
+    </tr></thead>
+    <tbody>${list.map(b => {
+      const libUrl = adLibUrl(b.pageId);
+      const siteUrl = b.site ? 'https://'+b.site : '';
+      return `<tr>
+        <td style="font-weight:600;white-space:nowrap">${escHtml(b.brand)}</td>
+        <td><span class="tag" style="background:${nicheColor(b.nicho)}22;color:${nicheColor(b.nicho)};font-size:10px;white-space:nowrap">${nicheLabel(b.nicho)}</span></td>
+        <td>${libUrl ? `<a href="${libUrl}" target="_blank" style="color:var(--accent);text-decoration:none;font-size:11px" title="View ${escHtml(b.brand)} ads">&#128269; Ads</a>` : '<span style="color:var(--text-3);font-size:11px">--</span>'}</td>
+        <td>${siteUrl ? `<a href="${siteUrl}" target="_blank" style="color:var(--accent);text-decoration:none;font-size:11px">${escHtml(b.site)}</a>` : '<span style="color:var(--text-3);font-size:11px">--</span>'}</td>
+        <td style="max-width:300px;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escHtml(b.what)}">${escHtml(b.what)}</td>
+        <td>${tierBadge(b.tier)}</td>
+      </tr>`;
+    }).join('')}</tbody></table></div>
+    <div style="margin-top:8px;font-size:11px;color:var(--text-3)">${list.length} brands</div>`;
+}
+
+function sortBrandDir(col) {
+  if (_bdSort.col === col) _bdSort.asc = !_bdSort.asc;
+  else { _bdSort.col = col; _bdSort.asc = true; }
+  renderBrandDirTable();
 }
 
 // ===== CATALOG =====
