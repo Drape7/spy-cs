@@ -322,7 +322,8 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg-0);color:var(-
       </div>
 
       <div class="section" id="sec-spy-reports">
-        <div class="empty-state"><div class="empty-icon">&#128270;</div><p>Spy reports will appear here as you add them. Each report covers patterns, gaps, and strategic implications for a niche.</p></div>
+        <p style="font-size:12px;color:var(--text-3);margin-bottom:16px;line-height:1.5">Cross-niche competitive intelligence from Meta Ad Library. Patterns, gaps, and strategic implications.</p>
+        <div id="spy-reports-container"></div>
       </div>
 
       <div class="section" id="sec-timeline">
@@ -461,6 +462,117 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg-0);color:var(-
 </div>
 
 <script>
+// ===== SPY REPORTS =====
+const SPY_REPORTS = [
+  {
+    id: 'cookware-dtc',
+    nicho: 'cookware',
+    title: 'Cookware DTC - Meta Ad Library Spy',
+    source: 'Meta Ad Library (4 brands, ~2,400+ ads)',
+    date: '2026-09-02',
+    brands: [
+      { name:'Our Place', ads:1700, videoP:2.4, positioning:'Lifestyle/design, ceramic', control:'"Your classic cookware set, but actually good"' },
+      { name:'Caraway', ads:370, videoP:50, positioning:'Non-toxic chic, ceramic, UGC', control:'UGC "So new home ownership..." (3v)' },
+      { name:'HexClad', ads:279, videoP:29, positioning:'Hybrid titanium, celebrity (Ramsay)', control:'Gordon Ramsay endorsement' },
+      { name:'Longwell', ads:129, videoP:40, positioning:'Fear-based PFAS, titanium puro, price', control:'"After my third nonstick pan peeled" (32v)' }
+    ],
+    patterns: [
+      'Static dominant (Our Place 97.6%, except Caraway 50/50)',
+      'Zero carousel across 4 brands',
+      'Zero UGC except Caraway (whose #1 control IS UGC)',
+      'Non-toxic is the universal angle but 2 flavors: aspirational (Our Place "by design") vs fear-based (Longwell "PFAS peeling")',
+      'Our Place sells DESIGN, Longwell sells SAFETY, HexClad sells CELEBRITY, Caraway sells LIFESTYLE NON-TOXIC'
+    ],
+    gaps: [
+      'Comparative carousel',
+      'UGC creator (except Caraway)',
+      'Unaware cooking content (0% across 4 brands)',
+      'Mom/family as protagonist',
+      'Sustainability/anti-waste',
+      'Advertorial/independent review',
+      'Expert authority (nutritionist, not chef)'
+    ],
+    implications: [
+      'Video is first-mover advantage (niche is 70%+ static)',
+      'UGC validated by Caraway (control #1)',
+      'Fear-based (Longwell) vs Aspirational (Our Place) are separate territories, not direct competition',
+      '25-year warranty (Longwell) is unique USP in niche (nobody else mentions durability)'
+    ]
+  },
+  {
+    id: 'skincare-dtc',
+    nicho: 'skincare',
+    title: 'Skin Care / Supplement DTC - Meta Ad Library Spy',
+    source: 'Meta Ad Library (5 brands, ~104 ads)',
+    date: '2026-09-02',
+    brands: [
+      { name:'Nutrafol', ads:64, videoP:3, positioning:'Hair growth, clinical proof', control:'"The best thing for each other\'s hair" (6v)' },
+      { name:'ARMRA', ads:17, videoP:12, positioning:'Colostrum 400+ bioactives, bloating/gut', control:'"Tired of trying every supplement" (3v)' },
+      { name:'Seed', ads:10, videoP:20, positioning:'DS-01 synbiotic, gut freedom', control:'"Free your gut this summer" (3v)' },
+      { name:'Vital Proteins', ads:9, videoP:0, positioning:'Celebrity collagen (Jessica Pegula)', control:'Celebrity endorsement' },
+      { name:'AG1', ads:4, videoP:0, positioning:'Science-backed greens', control:'Minimal Meta presence' }
+    ],
+    patterns: [
+      'LOW volume on Meta vs cookware (Nutrafol 64 vs Our Place 1,700). Niche is more YouTube/podcast/influencer-driven',
+      'Static dominant (80-100% across ALL brands)',
+      'Single angle per brand (Nutrafol=hair, ARMRA=bloating, Seed=gut, VP=collagen)',
+      'Science as support (clinical proof, bioactive count, strain count) but not primary angle',
+      '100% positive/aspirational tone (nobody uses fear-based marketing)'
+    ],
+    gaps: [
+      'Video (93% static across entire niche)',
+      'UGC (nearly zero, 1 Seed, 1 ARMRA)',
+      'Before/after (likely regulatory barrier)',
+      'Carousel (zero across 5 brands)',
+      'Multi-angle per brand (each hits only 1 angle)',
+      'Condition-specific (PCOS/menopause/endo on LP but not ad)',
+      'Unaware content (everything assumes audience already knows they need the product)',
+      'Cross-brand comparison'
+    ],
+    implications: [
+      'Video is the BIGGEST gap. First to do good video has real first-mover advantage',
+      'UGC nearly nonexistent (surprising for DTC). Immediate opportunity',
+      'ARMRA has versatile product (400+ bioactives) but single angle (bloating). Diversification = opportunity',
+      'Niche likely works better on YouTube/podcast than Meta. CPA may be high'
+    ]
+  },
+  {
+    id: 'weightloss-dtc',
+    nicho: 'health',
+    title: 'Weight Loss DTC - Meta Ad Library Spy',
+    source: 'Meta Ad Library (3 brands, ~103 ads)',
+    date: '2026-09-02',
+    brands: [
+      { name:'Bioma', ads:43, videoP:5, positioning:'GLP-1 trend-jacking natural, probiotic', control:'"GLP-1 has become biggest wellness trend" (10v!)' },
+      { name:'GOLO', ads:30, videoP:17, positioning:'Anti-GLP-1, anti-calorie, metabolic', control:'"There\'s a reason some approaches feel easier" (2v)' },
+      { name:'Noom', ads:30, videoP:3, positioning:'Behavior change app, quiz funnel', control:'"Noom finally has coursepack Aging & Metabolism" (~15 ads)' }
+    ],
+    patterns: [
+      'Static dominant (83-97% across all brands)',
+      'High repetitiveness (few hooks, many versions of the same)',
+      'UGC only Bioma (5 creators, ~23 ads). GOLO and Noom = zero',
+      'Zero science/mechanism across all (nobody explains HOW it works)',
+      'Zero before/after (compliance barrier)'
+    ],
+    gaps: [
+      'Video (92% static across niche)',
+      'Mechanism explanation visual ("how your gut controls metabolism")',
+      'Doctor/nutritionist authority (zero experts across 3 brands)',
+      'Alternative before/after ("day in the life" transformation)',
+      'Carousel (zero)',
+      'Cross-brand comparison',
+      'Advertorial (validated format in health but absent)'
+    ],
+    implications: [
+      'GLP-1 positioning is MANDATORY for any WL brand in 2026',
+      'Anti-GLP-1 exit (GOLO) is original angle but poorly executed (zero UGC/testimonial). Strong execution opportunity',
+      'Bioma is the UGC model in WL (5 creators). Replicable',
+      'Mechanism visual is the most critical gap: whoever explains HOW it works converts problem-aware to solution-aware'
+    ],
+    trend: { name:'GLP-1/Ozempic', strategies:['Trend-jacking (Bioma): "natural GLP-1"','Counter-positioning (GOLO): "leaving GLP-1?"','Ignore (Noom): psychology/behavior focus'] }
+  }
+];
+
 // ===== NICHE CONFIG =====
 const NICHE_CONFIG = {
   health:      { label: 'Health & Wellness',  cor: '#22c55e', keywords: ['probiotics','gut health supplement','GLP-1 supplement','GLP-1 natural','metabolism booster','fat burner','appetite suppressant','insulin resistance','resistant starch','prebiotic fiber','digestive enzymes','magnesium supplement','berberine supplement','organ supplements','synbiotic','weight loss supplement','probiotic weight loss','gut bacteria','metabolic health','blood sugar supplement','cortisol belly','natural GLP-1','anti-Ozempic','cravings control','bloating supplement','microbiome','functional gum','nootropic gum','adaptogens','sleep supplement','immunity','energy supplement','protein powder'] },
@@ -863,6 +975,7 @@ function renderTab(tab) {
     case 'coverage': renderCoverage(); break;
     case 'gaps': renderGaps(); break;
     case 'angles': renderAngles(); break;
+    case 'spy-reports': renderSpyReports(); break;
     case 'timeline': renderTimeline(); break;
     case 'compare': renderCompareSetup(); break;
     case 'teardowns': renderTeardowns(); break;
@@ -1101,6 +1214,64 @@ function renderAngles() {
       <td style="font-size:11px;color:var(--text-2)">${[...data.brands].join(', ')}</td>
       <td><div style="height:8px;background:var(--bg-4);border-radius:4px;overflow:hidden;min-width:100px"><div style="width:${Math.round(data.total / maxCount * 100)}%;height:100%;background:var(--accent);border-radius:4px"></div></div></td>
     </tr>`).join('')}</tbody></table>`;
+}
+
+// ===== SPY REPORTS =====
+function renderSpyReports() {
+  let reports = SPY_REPORTS;
+  if (_nichoF !== 'all') reports = reports.filter(r => r.nicho === _nichoF);
+  const container = document.getElementById('spy-reports-container');
+  if (!reports.length) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">&#128270;</div><p>No spy reports for this niche yet.</p></div>';
+    return;
+  }
+  container.innerHTML = reports.map(r => {
+    const totalAds = r.brands.reduce((s, b) => s + b.ads, 0);
+    const avgVideo = r.brands.length ? Math.round(r.brands.reduce((s, b) => s + b.videoP, 0) / r.brands.length) : 0;
+    const nicheColor = Object.values(NICHE_CONFIG).find(n => n.label.toLowerCase().includes(r.nicho)) ? (NICHE_CONFIG[r.nicho] || {}).cor || 'var(--accent)' : 'var(--accent)';
+    return `<div class="table-card" style="margin-bottom:20px;padding:20px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+            <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${nicheColor}"></span>
+            <h3 style="margin:0;font-size:15px;font-weight:700">${escHtml(r.title)}</h3>
+          </div>
+          <div style="font-size:11px;color:var(--text-3)">${escHtml(r.source)} &middot; ${r.date}</div>
+        </div>
+        <div style="display:flex;gap:16px">
+          <div style="text-align:center"><div style="font-size:18px;font-weight:700;font-family:'JetBrains Mono',monospace">${r.brands.length}</div><div style="font-size:10px;color:var(--text-3)">Brands</div></div>
+          <div style="text-align:center"><div style="font-size:18px;font-weight:700;font-family:'JetBrains Mono',monospace">${totalAds.toLocaleString()}</div><div style="font-size:10px;color:var(--text-3)">Ads</div></div>
+          <div style="text-align:center"><div style="font-size:18px;font-weight:700;font-family:'JetBrains Mono',monospace">${avgVideo}%</div><div style="font-size:10px;color:var(--text-3)">Video</div></div>
+        </div>
+      </div>
+      <table style="margin-bottom:16px"><thead><tr><th>Brand</th><th>Ads</th><th>Video%</th><th>Positioning</th><th>Control</th></tr></thead>
+      <tbody>${r.brands.map(b => `<tr>
+        <td style="font-weight:600">${escHtml(b.name)}</td>
+        <td style="font-family:'JetBrains Mono',monospace;text-align:center">${b.ads.toLocaleString()}</td>
+        <td style="font-family:'JetBrains Mono',monospace;text-align:center">${b.videoP}%</td>
+        <td style="font-size:11px">${escHtml(b.positioning)}</td>
+        <td style="font-size:11px;color:var(--text-2)">${escHtml(b.control)}</td>
+      </tr>`).join('')}</tbody></table>
+      ${r.trend ? `<div style="background:var(--bg-3);border-radius:8px;padding:12px;margin-bottom:14px">
+        <div style="font-weight:700;font-size:12px;margin-bottom:6px">&#127793; Trend: ${escHtml(r.trend.name)}</div>
+        <ol style="margin:0;padding-left:18px;font-size:12px;line-height:1.6">${r.trend.strategies.map(s => `<li>${escHtml(s)}</li>`).join('')}</ol>
+      </div>` : ''}
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px">
+        <div>
+          <div style="font-weight:700;font-size:12px;margin-bottom:6px;color:var(--accent)">Patterns</div>
+          <ul style="margin:0;padding-left:16px;font-size:12px;line-height:1.7">${r.patterns.map(p => `<li>${escHtml(p)}</li>`).join('')}</ul>
+        </div>
+        <div>
+          <div style="font-weight:700;font-size:12px;margin-bottom:6px;color:#ef4444">Gaps (nobody does)</div>
+          <ul style="margin:0;padding-left:16px;font-size:12px;line-height:1.7">${r.gaps.map(g => `<li>${escHtml(g)}</li>`).join('')}</ul>
+        </div>
+        <div>
+          <div style="font-weight:700;font-size:12px;margin-bottom:6px;color:#22c55e">CS Implications</div>
+          <ul style="margin:0;padding-left:16px;font-size:12px;line-height:1.7">${r.implications.map(im => `<li>${escHtml(im)}</li>`).join('')}</ul>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 // ===== TIMELINE =====
